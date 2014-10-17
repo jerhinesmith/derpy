@@ -2,6 +2,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     json (1.8.1)
+    newrelic_rpm (3.9.5.251)
     rack (1.5.2)
     rack-protection (1.5.3)
       rack
@@ -18,5 +19,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  newrelic_rpm (~> 3.9.5.251)
   sinatra (~> 1.4.5)
   slackbotsy (~> 0.2.1)
