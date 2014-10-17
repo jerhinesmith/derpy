@@ -24,6 +24,10 @@ bot = Slackbotsy::Bot.new(config) do
 
 end
 
+post '/' do
+  bot.handle_item(params)
+end
+
 get '/status' do
   "ok"
 end
