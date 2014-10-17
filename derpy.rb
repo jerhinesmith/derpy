@@ -1,5 +1,6 @@
 require 'slackbotsy'
 require 'sinatra'
+require 'newrelic_rpm'
 
 config = {
   team:           ENV['SLACK_TEAM'],
