@@ -22,3 +22,7 @@ bot = Slackbotsy::Bot.new(config) do
   end
 
 end
+
+get '/status' do
+  "ok"
+end
