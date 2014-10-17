@@ -31,3 +31,7 @@ end
 get '/status' do
   "ok"
 end
+
+get '/config' do
+  config.to_json
+end
