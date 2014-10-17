@@ -1,13 +1,14 @@
 require 'slackbotsy'
 require 'sinatra'
 require 'newrelic_rpm'
+require 'json'
 
 config = {
-  team:           ENV['SLACK_TEAM'],
-  channel:        ENV['SLACK_CHANNEL'],
-  name:           ENV.fetch('SLACK_NAME') { 'derpy' },
-  incoming_token: ENV['SLACK_TOKEN_INCOMING'],
-  outgoing_token: ENV['SLACK_TOKEN_OUTGOING']
+  'team'           => ENV['SLACK_TEAM'],
+  'channel'        => ENV['SLACK_CHANNEL'],
+  'name'           => ENV.fetch('SLACK_NAME') { 'derpy' },
+  'incoming_token' => ENV['SLACK_TOKEN_INCOMING'],
+  'outgoing_token' => ENV['SLACK_TOKEN_OUTGOING']
 }
 
 bot = Slackbotsy::Bot.new(config) do
