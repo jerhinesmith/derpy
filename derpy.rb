@@ -1,4 +1,6 @@
 require 'slackbotsy'
+require 'active_support'
+require 'active_support/hash_with_indifferent_access'
 require 'sinatra'
 require 'newrelic_rpm'
 require 'json'
@@ -13,8 +15,8 @@ config = {
 
 bot = Slackbotsy::Bot.new(config) do
 
-  hear /echo\s+(.+)/ do |data, mdata|
-    "I heard #{data['user_name']} say '#{mdata[1]}' in #{data['channel_name']}"
+  hear /echo\s+(.+)/ do |mdata|
+    "I heard #{user_name} say '#{mdata[1]}' in #{channel_name}"
   end
 
   hear /flip out/i do
@@ -26,7 +28,7 @@ bot = Slackbotsy::Bot.new(config) do
 end
 
 post '/' do
-  bot.handle_item(params)
+  bot.handle_item(ActiveSupport::HashWithIndifferentAccess.new(params.stringify_keys))
 end
 
 get '/status' do
