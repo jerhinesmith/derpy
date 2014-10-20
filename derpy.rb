@@ -6,7 +6,6 @@ require 'newrelic_rpm'
 require 'json'
 
 Dir.glob(File.join(File.dirname(__FILE__), 'services', '*.rb')).each do |service|
-  puts "Requiring #{service}"
   require service
 end
 
@@ -37,7 +36,9 @@ post '/' do
 end
 
 post '/cjh' do
-  Cjh.call(params['text'])
+  bot.say Cjh.call(params['text'])
+
+  ""
 end
 
 get '/status' do
