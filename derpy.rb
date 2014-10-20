@@ -31,6 +31,10 @@ post '/' do
   bot.handle_item(ActiveSupport::HashWithIndifferentAccess.new(params.stringify_keys))
 end
 
+post '/cjh' do
+  Cjh.call(params['text'])
+end
+
 get '/status' do
   "ok"
 end
