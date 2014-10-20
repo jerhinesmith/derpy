@@ -5,6 +5,11 @@ require 'sinatra'
 require 'newrelic_rpm'
 require 'json'
 
+Dir.glob(File.join(File.dirname(__FILE__), 'services', '*.rb')).each do |service|
+  puts "Requiring #{service}"
+  require service
+end
+
 config = {
   'team'           => ENV['SLACK_TEAM'],
   'channel'        => ENV['SLACK_CHANNEL'],
