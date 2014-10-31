@@ -42,7 +42,7 @@ post '/cjh' do
 end
 
 post '/kc' do
-  boy.say Kc.new.random_tweet
+  bot.say Kc.new.random_tweet
 end
 
 get '/status' do
