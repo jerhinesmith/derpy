@@ -17,3 +17,6 @@ gem 'activesupport',  '~> 4.1.7'
 
 # Interacting with other services
 gem 'nokogiri',       '~> 1.6.3.1'
+
+# Twitter integration
+gem 'twitter'
