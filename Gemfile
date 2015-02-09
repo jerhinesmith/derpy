@@ -1,22 +1,19 @@
 source "https://rubygems.org"
 
 # Ruby
-ruby '2.1.4'
+ruby '2.2.0'
 
 # Server
-gem 'sinatra',        '~> 1.4.5'
-
-# Bot
-gem 'slackbotsy',     '~> 0.2.1'
+gem 'sinatra'
 
 # Monitoring
-gem 'newrelic_rpm',   '~> 3.9.6.257'
-
-# Hash with indifferent access
-gem 'activesupport',  '~> 4.1.7'
+gem 'newrelic_rpm'
 
 # Interacting with other services
-gem 'nokogiri',       '~> 1.6.3.1'
+gem 'nokogiri'
 
 # Twitter integration
 gem 'twitter'
+
+# HTTP wrapper
+gem 'faraday'

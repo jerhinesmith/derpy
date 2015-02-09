@@ -1,12 +1,16 @@
-require 'slackbotsy'
-require 'active_support'
-require 'active_support/hash_with_indifferent_access'
 require 'sinatra'
 require 'newrelic_rpm'
+require 'faraday'
 require 'json'
 
 Dir.glob(File.join(File.dirname(__FILE__), 'services', '*.rb')).each do |service|
   require service
+end
+
+slack_connection = Faraday.new(url: 'https://hooks.slack.com') do |faraday|
+  faraday.request  :url_encoded             # form-encode POST params
+  faraday.response :logger                  # log requests to STDOUT
+  faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
 end
 
 config = {
@@ -14,36 +18,9 @@ config = {
   'channel'        => ENV['SLACK_CHANNEL'],
   'name'           => ENV.fetch('SLACK_NAME') { 'derpy' },
   'incoming_token' => ENV['SLACK_TOKEN_INCOMING'],
-  'outgoing_token' => ENV['SLACK_TOKEN_OUTGOING']
+  'outgoing_token' => ENV['SLACK_TOKEN_OUTGOING'],
+  'incoming_path'  => ENV['SLACK_INCOMING_PATH']
 }
-
-bot = Slackbotsy::Bot.new(config) do
-
-  hear /echo\s+(.+)/ do |mdata|
-    "I heard #{user_name} say '#{mdata[1]}' in #{channel_name}"
-  end
-
-  hear /flip out/i do
-    open('http://tableflipper.com/gif') do |f|
-      "<#{f.read}>"
-    end
-  end
-
-end
-
-post '/' do
-  bot.handle_item(ActiveSupport::HashWithIndifferentAccess.new(params.stringify_keys))
-end
-
-post '/cjh' do
-  bot.say Cjh.call(params['text'])
-
-  ""
-end
-
-post '/kc' do
-  bot.say Kc.new.random_tweet
-end
 
 get '/status' do
   "ok"
@@ -51,4 +28,22 @@ end
 
 get '/config' do
   config.to_json
+end
+
+get '/test' do
+  message = params[:message]
+  logger.info "Alert! #{params[:message]}"
+
+  payload = {
+    channel:    '#derpy-test',
+    username:   'test',
+    text:       message,
+    icon_emoji: ':light_rail:'
+  }
+
+  slack_connection.post do |req|
+    req.url config['incoming_path']
+    req.headers['Content-Type'] = 'application/json'
+    req.body = payload.to_json
+  end
 end
