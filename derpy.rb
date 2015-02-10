@@ -16,7 +16,7 @@ end
 config = {
   'team'           => ENV['SLACK_TEAM'],
   'channel'        => ENV['SLACK_CHANNEL'],
-  'name'           => ENV.fetch('SLACK_NAME') { 'derpy' },
+  'name'           => ENV.fetch('SLACK_NAME', 'derpy'),
   'incoming_token' => ENV['SLACK_TOKEN_INCOMING'],
   'outgoing_token' => ENV['SLACK_TOKEN_OUTGOING'],
   'incoming_path'  => ENV['SLACK_INCOMING_PATH']
@@ -26,8 +26,13 @@ get '/status' do
   "ok"
 end
 
-get '/config' do
-  config.to_json
+# Register response handlers here
+post '/message' do
+  logger.info "Message Received"
+  params.each do |k, v|
+    logger.info "#{k}: #{v}"
+  end
+  logger.info "End Message"
 end
 
 get '/test' do
