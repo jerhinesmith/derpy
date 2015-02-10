@@ -28,7 +28,7 @@ post '/message' do
 
   logger.info "Message! #{message.inspect}"
 
-  channel.receive(message)
+  channel.recieve(message)
 end
 
 get '/test' do
