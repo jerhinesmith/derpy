@@ -43,7 +43,7 @@ get '/cjh' do
   response = Cjh.call(params[:text])
 
   message = OutgoingMessage.new(
-    channel:  '#derpy-test',
+    channel:  '#derp',
     username: 'trollcjh',
     icon_url: 'http://i.imgur.com/w5yXDIe.jpg',
     text:     response

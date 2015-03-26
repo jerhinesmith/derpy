@@ -52,7 +52,7 @@ class Cjh
     srand()
     rand_value = rand()
 
-    return ":heart: :tswift: :heart:" if rand_value < WEIGHTS[:taylor]
+    return ":heart: :taylor: :heart:" if rand_value < WEIGHTS[:taylor]
     return "Anyone who doesn't use #{@topic.downcase} is nubs." if rand_value < WEIGHTS[:pro]
     return "#{rand_value < WEIGHTS[:haskell] ? 'Learn :haskell:. ' : ''}#{@topic.capitalize} sucks. Never use #{@topic.downcase}."
   end
