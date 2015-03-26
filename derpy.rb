@@ -43,3 +43,16 @@ get '/test' do
 
   channel.post(message)
 end
+
+get '/cjh' do
+  response = Cjh.call(params[:message])
+
+  message = OutgoingMessage.new(
+    channel:  '#derpy-test',
+    username: 'trollcjh',
+    icon_url: 'http://i.imgur.com/w5yXDIe.jpg',
+    text:     response
+  )
+
+  channel.post(message)
+end

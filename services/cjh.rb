@@ -11,7 +11,7 @@ class Cjh
     taylor:  0.05
   }
 
-  def initialize(topic)
+  def initialize(topic = nil)
     @topic = topic
 
     self
@@ -52,8 +52,8 @@ class Cjh
     srand()
     rand_value = rand()
 
-    return "omg i love taylor swift" if rand_value < WEIGHTS[:taylor]
+    return ":heart: :tswift: :heart:" if rand_value < WEIGHTS[:taylor]
     return "Anyone who doesn't use #{@topic.downcase} is nubs." if rand_value < WEIGHTS[:pro]
-    return "#{rand_value < WEIGHTS[:haskell] ? 'Learn haskell. ' : ''}#{@topic} sucks. Never use #{@topic.downcase}."
+    return "#{rand_value < WEIGHTS[:haskell] ? 'Learn :haskell:. ' : ''}#{@topic.capitalize} sucks. Never use #{@topic.downcase}."
   end
 end
