@@ -40,7 +40,7 @@ get '/test' do
 end
 
 get '/cjh' do
-  response = Cjh.call(params[:message])
+  response = Cjh.call(params[:text])
 
   message = OutgoingMessage.new(
     channel:  '#derpy-test',
