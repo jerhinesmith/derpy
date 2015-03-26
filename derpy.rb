@@ -7,16 +7,11 @@ Dir.glob(File.join(File.dirname(__FILE__), 'models', '*.rb')).each do |model|
   require model
 end
 
-channel = Channel.new(ENV['SLACK_CHANNEL'], ENV['SLACK_INCOMING_PATH'])
+Dir.glob(File.join(File.dirname(__FILE__), 'services', '*.rb')).each do |service|
+  require service
+end
 
-# config = {
-#   'team'           => ENV['SLACK_TEAM'],
-#   'channel'        => ENV['SLACK_CHANNEL'],
-#   'name'           => ENV.fetch('SLACK_NAME', 'derpy'),
-#   'incoming_token' => ENV['SLACK_TOKEN_INCOMING'],
-#   'outgoing_token' => ENV['SLACK_TOKEN_OUTGOING'],
-#   'incoming_path'  => ENV['SLACK_INCOMING_PATH']
-# }
+channel = Channel.new(ENV['SLACK_CHANNEL'], ENV['SLACK_INCOMING_PATH'])
 
 get '/status' do
   "ok"
