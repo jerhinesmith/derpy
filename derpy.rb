@@ -69,5 +69,5 @@ get '/gif' do
 
   channel.post(message)
 
-  channel.to_json
+  message.to_json
 end
