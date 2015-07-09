@@ -22,7 +22,7 @@ class MessageAttachment
     self
   end
 
-  def to_json
+  def to_json(options = {})
     payload.to_json
   end
 
