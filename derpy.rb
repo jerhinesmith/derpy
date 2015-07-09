@@ -56,7 +56,7 @@ get '/gif' do
   input = params[:text]
 
   message = OutgoingMessage.new(
-    channel:  '#derpy-test',
+    channel:  '#derp',
     username: 'gifcjh',
     icon_url: 'http://i.imgur.com/w5yXDIe.jpg'
   )
@@ -71,6 +71,4 @@ get '/gif' do
   end
 
   channel.post(message)
-
-  message.to_json
 end
