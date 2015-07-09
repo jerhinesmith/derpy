@@ -17,12 +17,14 @@ class OutgoingMessage
 
   private
   def payload
-    @payload = { text: text }
+    @payload = { }
 
-    @payload.merge!(channel:    channel)    unless channel.nil?
-    @payload.merge!(username:   username)   unless username.nil?
-    @payload.merge!(icon_emoji: icon_emoji) unless icon_emoji.nil?
-    @payload.merge!(icon_url:   icon_url)   unless icon_url.nil?
+    @payload.merge!(text:         text)         unless text.nil?
+    @payload.merge!(channel:      channel)      unless channel.nil?
+    @payload.merge!(username:     username)     unless username.nil?
+    @payload.merge!(icon_emoji:   icon_emoji)   unless icon_emoji.nil?
+    @payload.merge!(icon_url:     icon_url)     unless icon_url.nil?
+    @payload.merge!(attachments:  attachments)  unless attachments.empty?
 
     @payload
   end
