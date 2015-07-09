@@ -68,4 +68,6 @@ get '/gif' do
   end
 
   channel.post(message)
+
+  channel.to_json
 end
