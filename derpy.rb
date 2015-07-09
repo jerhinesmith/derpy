@@ -62,7 +62,10 @@ get '/gif' do
   )
 
   if image_url = GifCjh.call(input)
-    message.attachments << MessageAttachment.new(image_url: image_url)
+    message.attachments << MessageAttachment.new(
+      fallback:  input,
+      image_url: image_url
+    )
   else
     message.text = "No match for #{input}"
   end
