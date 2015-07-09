@@ -51,3 +51,21 @@ get '/cjh' do
 
   channel.post(message)
 end
+
+get '/gif' do
+  input = params[:text]
+
+  message = OutgoingMessage.new(
+    channel:  '#derpy-test',
+    username: 'gifcjh',
+    icon_url: 'http://i.imgur.com/w5yXDIe.jpg'
+  )
+
+  if image_url = GifCjh.call(input)
+    message.attachments << MessageAttachment.new(image_url: image_url)
+  else
+    message.text = "No match for #{input}"
+  end
+
+  channel.post(message)
+end
