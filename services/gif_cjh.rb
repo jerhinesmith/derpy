@@ -12,14 +12,10 @@ class GifCjh
 /gif help                    returns this list
 EOF
 
-  attr_reader :redis
-
-  def initialize
-    @redis = Redis.new(url: ENV['REDISCLOUD_URL'])
-  end
-
   def get(tag)
-    @redis.srandmember(tag.to_s.to_sym)
+    redis do |r|
+      r.srandmember(tag.to_s.to_sym)
+    end
   end
 
   def add(raw_key, url)
@@ -28,7 +24,9 @@ EOF
     return false unless key && url
     return false unless key.to_s.size > 0
 
-    @redis.sadd(key, url)
+    redis do |r|
+      r.sadd(key, url)
+    end
   end
 
   def remove(raw_key, url)
@@ -37,7 +35,9 @@ EOF
     return false unless key && url
     return false unless key.to_s.size > 0
 
-    @redis.srem(key, url)
+    redis do |r|
+      r.srem(key, url)
+    end
   end
 
   def list
@@ -46,6 +46,13 @@ EOF
 
 
   private
+
+  def redis
+    @redis = Redis.new(url: ENV['REDISCLOUD_URL'])
+    result = yield @redis
+    @redis.quit
+    result
+  end
 
   def sanitize_key(key)
     key.to_s.downcase.gsub(/\s/, '')

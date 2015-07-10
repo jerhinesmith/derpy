@@ -68,7 +68,7 @@ get '/gif' do
 
   case command
     when :help
-      return GifCjh::HELP
+      result = GifCjh::HELP
 
     when :add
       key, url = args
@@ -97,8 +97,6 @@ get '/gif' do
         result = "No match for #{input}"
       end
   end
-
-  gif_cjh.redis.close
 
   return result
 end
