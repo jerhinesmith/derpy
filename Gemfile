@@ -3,6 +3,9 @@ source "https://rubygems.org"
 # Ruby
 ruby '2.2.0'
 
+# Redis
+gem 'redis'
+
 # Server
 gem 'sinatra'
 

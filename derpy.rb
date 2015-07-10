@@ -74,6 +74,11 @@ get '/gif' do
       success = gif_cjh.add(key, url)
       return success ? "Added #{key}: #{url}" : "Unable to add key: url"
 
+    when :remove
+      key, url = args
+      success = gif_cjh.remove(key, url)
+      return success ? "Removed #{key}: #{url}" : "Unable to remove key: url"
+
     when :"", :list
       return gif_cjh.list
 

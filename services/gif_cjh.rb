@@ -1,70 +1,51 @@
 require 'open-uri'
 require 'faraday'
 require 'json'
+require 'redis'
 
 class GifCjh
-  UPDATE_DICTIONARY_URI = 'http://txtpub.com/0x459rai8'
-  DICTIONARY_URI = "#{UPDATE_DICTIONARY_URI}.txt"
-
-  HELP = <<-EOF
-/gif                returns a list of possible keys
-/gif KEY            returns a gif if one is found
-/gif add KEY URL    adds a new url for the given key
-/gif help           returns this list
+  HELP = <<EOF
+/gif                         returns a list of possible keys
+/gif KEY                     returns a gif if one is found
+/gif add KEY URL             adds a new url for the given key
+/gif remove KEY URL          adds a new url for the given key
+/gif help                    returns this list
 EOF
 
-  def get(tag)
-    dictionary[tag.to_s.to_sym].sample
+  def initialize
+    @redis = Redis.new(url: ENV['REDISCLOUD_URL'])
   end
 
-  def add(key, url)
-    success = false
+  def get(tag)
+    @redis.srandmember(tag.to_s.to_sym)
+  end
 
-    return unless key && url
-    return unless key.to_s.size > 0
+  def add(raw_key, url)
+    key = sanitize_key(raw_key)
 
-    if url_exists?(url)
-      lines << "#{key}: #{url}"
-      body = {document: {body: lines.join("\n")}}.to_json
+    return false unless key && url
+    return false unless key.to_s.size > 0
 
-      res = Faraday.put(UPDATE_DICTIONARY_URI, body) do |req|
-        req.headers['Content-Type'] = 'application/json'
-      end
+    @redis.sadd(key, url)
+  end
 
-      success = res.success? || res.status == 302
-    end
+  def remove(raw_key, url)
+    key = sanitize_key(raw_key)
 
-    success
+    return false unless key && url
+    return false unless key.to_s.size > 0
+
+    @redis.srem(key, url)
   end
 
   def list
-    dictionary.keys.sort.join(", ")
+    @redis.keys("*").sort.join(", ")
   end
+
 
   private
 
-  def lines
-    @lines ||= open(DICTIONARY_URI).readlines.map(&:strip).delete_if{|l| l.empty?}
-  end
-
-  def dictionary
-    return @dictionary if defined?(@dictionary)
-
-    @dictionary = Hash.new{|h, k| h[k] = []}
-
-    lines.map{|l| l.split(':', 2)}.each do |k, v|
-      @dictionary[k.downcase.to_sym] << v.strip
-    end
-
-    @dictionary
-  end
-
-  def url_exists?(url)
-    begin
-      res = Faraday.head(url)
-      res.success?
-    rescue
-      false
-    end
+  def sanitize_key(key)
+    key.to_s.downcase.gsub(/\s/, '')
   end
 end
