@@ -41,7 +41,9 @@ EOF
   end
 
   def list
-    @redis.keys("*").sort.join(", ")
+    redis do |r|
+      r.keys("*").sort.join(", ")
+    end
   end
 
 
