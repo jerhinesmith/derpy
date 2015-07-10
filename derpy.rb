@@ -53,7 +53,10 @@ get '/cjh' do
 end
 
 get '/gif' do
+  gif_cjh = GifCjh.new
   input = params[:text]
+  args = input.to_s.split(" ")
+  command = args.shift.to_s.to_sym
 
   message = OutgoingMessage.new(
     channel:  '#derp',
@@ -61,14 +64,28 @@ get '/gif' do
     icon_url: 'http://i.imgur.com/w5yXDIe.jpg'
   )
 
-  if image_url = GifCjh.call(input)
-    message.attachments << MessageAttachment.new(
-      fallback:  input,
-      image_url: image_url
-    )
-  else
-    message.text = "No match for #{input}"
-  end
+  case command
+    when :help
+      return GifCjh::HELP
 
-  channel.post(message)
+    when :add
+      key, url = args
+      success = gif_cjh.add(key, url)
+      return success ? "Added #{key}: #{url}" : "Unable to add key: url"
+
+    when :"", :list
+      return gif_cjh.list
+
+    else # got a key
+      if image_url = gif_cjh.get(input)
+        message.attachments << MessageAttachment.new(
+          fallback:  input,
+          image_url: image_url
+        )
+
+        channel.post(message)
+      else
+        return "No match for #{input}"
+      end
+  end
 end

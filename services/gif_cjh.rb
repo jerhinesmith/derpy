@@ -1,29 +1,54 @@
 require 'open-uri'
+require 'faraday'
+require 'json'
 
 class GifCjh
-  DICTIONARY_URI = 'http://txtpub.com/0x459rai8.txt'
+  UPDATE_DICTIONARY_URI = 'http://txtpub.com/0x459rai8'
+  DICTIONARY_URI = "#{UPDATE_DICTIONARY_URI}.txt"
 
-  attr_accessor :tag
+  HELP = <<-EOF
+/gif                returns a list of possible keys
+/gif KEY            returns a gif if one is found
+/gif add KEY URL    adds a new url for the given key
+/gif help           returns this list
+EOF
 
-  def initialize(tag)
-    @tag = tag.to_sym
-
-    self
+  def get(tag)
+    dictionary[tag.to_s.to_sym].sample
   end
 
-  def self.call(tag)
-    new(tag).call
+  def add(key, url)
+    success = false
+
+    return unless key && url
+    return unless key.to_s.size > 0
+
+    if url_exists?(url)
+      lines << "#{key}: #{url}"
+      body = {document: {body: lines.join("\n")}}.to_json
+
+      res = Faraday.put(UPDATE_DICTIONARY_URI, body) do |req|
+        req.headers['Content-Type'] = 'application/json'
+      end
+
+      success = res.success? || res.status == 302
+    end
+
+    success
   end
 
-  def call
-    dictionary[@tag].sample
+  def list
+    dictionary.keys.sort.join(", ")
   end
 
   private
+
+  def lines
+    @lines ||= open(DICTIONARY_URI).readlines.map(&:strip).delete_if{|l| l.empty?}
+  end
+
   def dictionary
     return @dictionary if defined?(@dictionary)
-
-    lines = open(DICTIONARY_URI).readlines.map(&:strip).delete_if{|l| l.empty?}
 
     @dictionary = Hash.new{|h, k| h[k] = []}
 
@@ -32,5 +57,14 @@ class GifCjh
     end
 
     @dictionary
+  end
+
+  def url_exists?(url)
+    begin
+      res = Faraday.head(url)
+      res.success?
+    rescue
+      false
+    end
   end
 end
