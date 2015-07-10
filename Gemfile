@@ -17,3 +17,7 @@ gem 'twitter'
 
 # HTTP wrapper
 gem 'faraday'
+
+group :development do
+  gem 'shotgun'
+end

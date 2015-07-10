@@ -11,7 +11,8 @@ Dir.glob(File.join(File.dirname(__FILE__), 'services', '*.rb')).each do |service
   require service
 end
 
-channel = Channel.new(ENV['SLACK_CHANNEL'], ENV['SLACK_INCOMING_PATH'])
+slack_channel = ENV['SLACK_CHANNEL']
+channel = Channel.new(slack_channel, ENV['SLACK_INCOMING_PATH'])
 
 get '/status' do
   "ok"
@@ -43,7 +44,7 @@ get '/cjh' do
   response = Cjh.call(params[:text])
 
   message = OutgoingMessage.new(
-    channel:  '#derp',
+    channel:  slack_channel,
     username: 'trollcjh',
     icon_url: 'http://i.imgur.com/w5yXDIe.jpg',
     text:     response
@@ -59,7 +60,7 @@ get '/gif' do
   command = args.shift.to_s.to_sym
 
   message = OutgoingMessage.new(
-    channel:  '#derp',
+    channel:  slack_channel,
     username: 'gifcjh',
     icon_url: 'http://i.imgur.com/w5yXDIe.jpg'
   )
@@ -80,6 +81,8 @@ get '/gif' do
       if image_url = gif_cjh.get(input)
         message.attachments << MessageAttachment.new(
           fallback:  input,
+          author_name: params[:user_name],
+          text: input,
           image_url: image_url
         )
 

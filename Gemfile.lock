@@ -21,6 +21,8 @@ GEM
     rack (1.5.2)
     rack-protection (1.5.3)
       rack
+    shotgun (0.9.1)
+      rack (>= 1.0)
     simple_oauth (0.3.0)
     sinatra (1.4.5)
       rack (~> 1.4)
@@ -47,5 +49,9 @@ DEPENDENCIES
   faraday
   newrelic_rpm
   nokogiri
+  shotgun
   sinatra
   twitter
+
+BUNDLED WITH
+   1.10.5
