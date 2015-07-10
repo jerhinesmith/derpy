@@ -12,6 +12,8 @@ class GifCjh
 /gif help                    returns this list
 EOF
 
+  attr_reader :redis
+
   def initialize
     @redis = Redis.new(url: ENV['REDISCLOUD_URL'])
   end

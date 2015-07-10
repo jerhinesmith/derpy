@@ -54,6 +54,7 @@ get '/cjh' do
 end
 
 get '/gif' do
+  result = nil
   gif_cjh = GifCjh.new
   input = params[:text]
   args = input.to_s.split(" ")
@@ -72,15 +73,15 @@ get '/gif' do
     when :add
       key, url = args
       success = gif_cjh.add(key, url)
-      return success ? "Added #{key}: #{url}" : "Unable to add key: url"
+      result = success ? "Added #{key}: #{url}" : "Unable to add key: url"
 
     when :remove
       key, url = args
       success = gif_cjh.remove(key, url)
-      return success ? "Removed #{key}: #{url}" : "Unable to remove key: url"
+      result = success ? "Removed #{key}: #{url}" : "Unable to remove key: url"
 
     when :"", :list
-      return gif_cjh.list
+      result = gif_cjh.list
 
     else # got a key
       if image_url = gif_cjh.get(input)
@@ -93,7 +94,11 @@ get '/gif' do
 
         channel.post(message)
       else
-        return "No match for #{input}"
+        result = "No match for #{input}"
       end
   end
+
+  gif_cjh.redis.close
+
+  return result
 end
