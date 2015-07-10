@@ -60,7 +60,7 @@ get '/gif' do
   command = args.shift.to_s.to_sym
 
   message = OutgoingMessage.new(
-    channel:  params[:channel_name] || slack_channel,
+    channel:  slack_channel,
     username: 'gifcjh',
     icon_url: 'http://i.imgur.com/w5yXDIe.jpg'
   )
