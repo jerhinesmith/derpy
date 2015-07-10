@@ -1,7 +1,7 @@
 require 'open-uri'
 
 class GifCjh
-  DICTIONARY_URI = 'http://45.55.28.175/0x459rai8.txt'
+  DICTIONARY_URI = 'http://txtpub.com/0x459rai8.txt'
 
   attr_accessor :tag
 
