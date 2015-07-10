@@ -1,7 +1,7 @@
 require 'open-uri'
 
 class GifCjh
-  DICTIONARY_URI = 'https://gist.githubusercontent.com/jerhinesmith/3fd76c589e7130844bf3/raw/05cdc814c1467b05abb8650fff3a43d156148e72/gistfile1.txt'
+  DICTIONARY_URI = 'http://45.55.28.175/0x459rai8.txt'
 
   attr_accessor :tag
 
