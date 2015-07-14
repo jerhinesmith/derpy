@@ -84,6 +84,7 @@ get '/gif' do
       result = gif_cjh.list
 
     when :show
+      key = args.first
       url = gif_cjh.get(key)
       result = url ? url : "Unable to get key: #{key}"
 
