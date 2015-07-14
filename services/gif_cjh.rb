@@ -5,8 +5,10 @@ require 'redis'
 
 class GifCjh
   HELP = <<EOF
+
 /gif                         returns a list of possible keys
 /gif KEY                     returns a gif if one is found
+/gif show KEY                show the url for the given key
 /gif add KEY URL             adds a new url for the given key
 /gif remove KEY URL          adds a new url for the given key
 /gif help                    returns this list

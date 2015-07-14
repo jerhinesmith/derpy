@@ -83,6 +83,10 @@ get '/gif' do
     when :"", :list
       result = gif_cjh.list
 
+    when :show
+      url = gif_cjh.get(key)
+      result = url ? url : "Unable to get key: #{key}"
+
     else # got a key
       if image_url = gif_cjh.get(input)
         message.attachments << MessageAttachment.new(
