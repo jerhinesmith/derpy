@@ -68,6 +68,7 @@ get '/raiders' do
     start_time = next_game.dtstart.new_offset('-0700')
 
     attachment = MessageAttachment.new(
+      title:      "Next Game",
       pretext:    next_game.summary,
       fallback:   next_game.summary,
       fields:     [
