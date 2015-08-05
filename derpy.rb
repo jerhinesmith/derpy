@@ -56,7 +56,7 @@ end
 get '/raiders' do
   command = (params[:text] || 'next').to_sym
   raider_bot = Raiders.new
-  message = = OutgoingMessage.new(
+  message = OutgoingMessage.new(
     channel:  '#derpy-test',
     username: 'raidercjh',
     icon_url: 'http://i.imgur.com/w5yXDIe.jpg'
