@@ -13,6 +13,6 @@ class Raiders
   end
 
   def events
-    @events ||= @schedule.events.sort_by{|e| e.dtstart}
+    @events ||= schedule.events.sort_by{|e| e.dtstart}
   end
 end
