@@ -69,7 +69,7 @@ get '/raiders' do
 
     attachment = MessageAttachment.new(
       title:      "Next Game",
-      pretext:    next_game.summary,
+      text:       next_game.summary,
       fallback:   next_game.summary,
       fields:     [
         {
