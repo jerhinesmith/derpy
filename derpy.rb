@@ -54,7 +54,9 @@ get '/cjh' do
 end
 
 get '/raiders' do
-  command = (params[:text] || 'next').to_sym
+  command = params[:text].strip
+  command = :next if command.empty?
+
   raider_bot = Raiders.new
   message = OutgoingMessage.new(
     channel:  slack_channel,
@@ -62,7 +64,7 @@ get '/raiders' do
     icon_url: Raiders::LOGO_URL
   )
 
-  case command
+  case command.to_sym
   when :next
     next_game  = raider_bot.next
     start_time = next_game.dtstart.new_offset('-0700')
