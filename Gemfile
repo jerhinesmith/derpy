@@ -26,4 +26,5 @@ gem 'icalendar'
 
 group :development do
   gem 'shotgun'
+  gem 'awesome_print'
 end

@@ -59,13 +59,32 @@ get '/raiders' do
   message = OutgoingMessage.new(
     channel:  '#derpy-test',
     username: 'raidercjh',
-    icon_url: 'http://i.imgur.com/w5yXDIe.jpg'
+    icon_url: Raiders::LOGO_URL
   )
 
   case command
   when :next
-    next_game = raider_bot.next
-    message.text = "Next Game is on #{next_game.dtstart.strftime('%B %d, %Y')} - #{next_game.summary}"
+    next_game  = raider_bot.next
+    start_time = next_game.dtstart.new_offset('-0700')
+
+    attachment = MessageAttachment.new(
+      pretext:    next_game.summary,
+      fallback:   next_game.summary,
+      fields:     [
+        {
+          title: 'Date',
+          value: start_time.strftime('%B %d, %Y @ %l:%M %P'),
+          short: true
+        },
+        {
+          title: 'Venue',
+          value: next_game.location.join(','),
+          short: true
+        }
+      ]
+    )
+
+    message.attachments << attachment
   end
 
   channel.post(message)
