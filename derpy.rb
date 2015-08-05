@@ -57,7 +57,7 @@ get '/raiders' do
   command = (params[:text] || 'next').to_sym
   raider_bot = Raiders.new
   message = OutgoingMessage.new(
-    channel:  '#derpy-test',
+    channel:  slack_channel,
     username: 'raidercjh',
     icon_url: Raiders::LOGO_URL
   )
