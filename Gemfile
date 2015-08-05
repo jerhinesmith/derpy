@@ -21,6 +21,9 @@ gem 'twitter'
 # HTTP wrapper
 gem 'faraday'
 
+# Calendar
+gem 'icalendar'
+
 group :development do
   gem 'shotgun'
 end

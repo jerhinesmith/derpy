@@ -53,6 +53,24 @@ get '/cjh' do
   channel.post(message)
 end
 
+get '/raiders' do
+  command = (params[:text] || 'next').to_sym
+  raider_bot = Raiders.new
+  message = = OutgoingMessage.new(
+    channel:  '#derpy-test',
+    username: 'raidercjh',
+    icon_url: 'http://i.imgur.com/w5yXDIe.jpg'
+  )
+
+  case command
+  when :next
+    next_game = raider_bot.next
+    message.text = "Next Game is on #{next_game.dtstart.strftime('%B %d, %Y')} - #{next_game.summary}"
+  end
+
+  channel.post(message)
+end
+
 get '/gif' do
   result = nil
   gif_cjh = GifCjh.new
