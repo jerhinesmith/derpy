@@ -59,7 +59,7 @@ get '/raiders' do
 
   raider_bot = Raiders.new
   message = OutgoingMessage.new(
-    channel:  '#derpy-test',
+    channel:  slack_channel,
     username: 'raidercjh',
     icon_url: Raiders::LOGO_URL
   )
