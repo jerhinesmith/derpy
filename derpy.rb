@@ -59,7 +59,7 @@ get '/raiders' do
 
   raider_bot = Raiders.new
   message = OutgoingMessage.new(
-    channel:  slack_channel,
+    channel:  '#derpy-test',
     username: 'raidercjh',
     icon_url: Raiders::LOGO_URL
   )
@@ -67,13 +67,17 @@ get '/raiders' do
   case command.to_sym
   when :next
     next_game  = raider_bot.next
-    start_time = next_game.dtstart.new_offset('-0700')
+    start_time = next_game.date
 
     attachment = MessageAttachment.new(
       title:      "Next Game",
-      text:       next_game.summary,
+      text:       next_game.emoji_summary,
       fallback:   next_game.summary,
       fields:     [
+        {
+          title: 'Opponent',
+          value: next_game.opponent
+        },
         {
           title: 'Date',
           value: start_time.strftime('%B %d, %Y @ %l:%M %P'),
@@ -81,7 +85,7 @@ get '/raiders' do
         },
         {
           title: 'Venue',
-          value: next_game.location.join(','),
+          value: next_game.location,
           short: true
         }
       ]
