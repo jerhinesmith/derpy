@@ -67,7 +67,7 @@ get '/raiders' do
   case command.to_sym
   when :next
     next_game  = raider_bot.next
-    start_time = next_game.date
+    start_time = next_game.pst_start
 
     attachment = MessageAttachment.new(
       title:      "Next Game",

@@ -1,7 +1,11 @@
 require 'icalendar'
 require 'open-uri'
 
-RaiderGame = Struct.new(:date, :summary, :location_string) do
+RaiderGame = Struct.new(:dtstart, :summary, :location_string) do
+  def pst_start
+    dtstart.new_offset('-0700')
+  end
+
   def teams
     summary.split(' at ')
   end
@@ -52,6 +56,6 @@ class Raiders
   end
 
   def events
-    @events ||= schedule.events.sort_by{|e| e.dtstart}.collect{|e| RaiderGame.new(e.dtstart.new_offset('-0700'), e.summary, e.location)}
+    @events ||= schedule.events.sort_by{|e| e.dtstart}.collect{|e| RaiderGame.new(e.dtstart, e.summary, e.location)}
   end
 end
