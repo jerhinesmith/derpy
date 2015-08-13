@@ -2,10 +2,10 @@ require_relative 'channel_observer'
 
 class Reddit < ChannelObserver
   def call
-    logginer.info incoming_message.inspect
+    logger.info incoming_message.inspect
 
     if incoming_message.text =~ /(\/r\/\w+)/i
-      logginer.info $1
+      logger.info $1
 
       message = OutgoingMessage.new(
         channel:  incoming_message.channel_name,
