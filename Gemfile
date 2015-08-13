@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
 # Ruby
-ruby '2.2.0'
+ruby '2.2.2'
 
 # Redis
 gem 'redis'
@@ -24,7 +24,11 @@ gem 'faraday'
 # Calendar
 gem 'icalendar'
 
+# Puma
+gem 'puma'
+
 group :development do
+  gem 'foreman'
   gem 'shotgun'
   gem 'awesome_print'
 end

@@ -35,6 +35,9 @@ post '/message' do
   logger.info "Message! #{message.inspect}"
 
   channel.recieve(message)
+
+  # return empty to make sinatra happy
+  ""
 end
 
 get '/test' do
