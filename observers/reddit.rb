@@ -1,3 +1,5 @@
+require_relative 'channel_observer'
+
 class Reddit < ChannelObserver
   def call
     logginer.info incoming_message.inspect
