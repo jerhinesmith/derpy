@@ -11,8 +11,18 @@ Dir.glob(File.join(File.dirname(__FILE__), 'services', '*.rb')).each do |service
   require service
 end
 
+Dir.glob(File.join(File.dirname(__FILE__), 'observers', '*.rb')).each do |observer|
+  require observer
+end
+
 slack_channel = ENV['SLACK_CHANNEL']
 channel = Channel.new(slack_channel, ENV['SLACK_INCOMING_PATH'])
+
+ENV['OBSERVERS'].split(',').each do |observer_klass|
+  observer_klass.capitalize!
+
+  channel.add_message_observer(Object.const_get(observer_klass)) if Object.const_defined?(observer_klass)
+end
 
 get '/status' do
   "ok"
