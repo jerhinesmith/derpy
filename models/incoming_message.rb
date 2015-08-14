@@ -9,4 +9,8 @@ class IncomingMessage
 
     self
   end
+
+  def posted_by_bot?
+    self.user_name == 'slackbot'
+  end
 end

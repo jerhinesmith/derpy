@@ -20,8 +20,8 @@ class Mitch < ChannelObserver
         if say_something
           message = OutgoingMessage.new(
             channel:  "##{incoming_message.channel_name}",
-            username: 'mitchcjh',
-            icon_url: 'http://i.imgur.com/w5yXDIe.jpg',
+            username: 'mitch',
+            icon_url: 'https://pbs.twimg.com/profile_images/1164297354/mitch1.jpg',
             text:     one_liner
           )
 

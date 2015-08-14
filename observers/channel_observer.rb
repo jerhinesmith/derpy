@@ -6,10 +6,17 @@ class ChannelObserver
   end
 
   def self.call(channel, incoming_message)
+    # Protect against responding to bots
+    return true if (!respond_to_bots? && incoming_message.posted_by_bot?)
+
     new(channel, incoming_message).call
   end
 
   def call
     raise NotImplementedError, "#call must be implemented by subclasses"
+  end
+
+  def respond_to_bots?
+    false
   end
 end
