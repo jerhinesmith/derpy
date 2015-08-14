@@ -164,5 +164,5 @@ get '/gif' do
 end
 
 get '/mitch' do
-  channel.post(Mitch::ONE_LINERS.sample)
+  Mitch::ONE_LINERS.sample
 end
