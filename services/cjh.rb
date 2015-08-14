@@ -22,7 +22,7 @@ class Cjh
   end
 
   def self.random_technology_topic
-    url = "http://en.wikipedia.org/wiki/List_of_buzzwords"
+    url = "https://en.wikipedia.org/wiki/List_of_buzzwords"
     doc = Nokogiri::HTML(open(url))
 
     buzzwords = doc.at_css('#Science_and_technology').parent.next_sibling.next_sibling.css('li').collect{|n| n.content}
