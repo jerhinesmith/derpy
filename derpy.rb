@@ -164,5 +164,12 @@ get '/gif' do
 end
 
 get '/mitch' do
-  Mitch::ONE_LINERS.sample
+  message = OutgoingMessage.new(
+    channel:  slack_channel,
+    username: 'mitch',
+    icon_url: 'http://i.imgur.com/bhDpHHS.jpg',
+    text:      Mitch::ONE_LINERS.sample
+  )
+
+  channel.post(message)
 end
