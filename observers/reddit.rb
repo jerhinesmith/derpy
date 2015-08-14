@@ -1,20 +1,26 @@
 require_relative 'channel_observer'
+require 'opengraph_parser'
 
 class Reddit < ChannelObserver
   def call
     if incoming_message.text =~ /(\/r\/\w+)/i
+      reddit_url = "https://www.reddit.com#{$1}"
+      open_graph = OpenGraph.new(reddit_url)
+
       message = OutgoingMessage.new(
         channel:  "##{incoming_message.channel_name}",
-        username: 'redditcjh',
-        icon_url: 'http://i.imgur.com/w5yXDIe.jpg',
-        text:     "<https://www.reddit.com#{$1}|#{$1}>"
+        username: 'reddit',
+        icon_url: 'http://themodernape.com/wp-content/uploads/2014/09/20131209094736.png'
       )
 
-      begin
-        puts message.to_json
-      rescue
-        puts "failed to put json"
-      end
+      attachment = MessageAttachment.new(
+        title:      open_graph.title,
+        title_link: open_graph.url,
+        text:       open_graph.description,
+        thumb_url:  open_graph.images.first
+      )
+
+      message.attachments << attachment
 
       channel.post(message)
     end

@@ -27,6 +27,9 @@ gem 'icalendar'
 # Puma
 gem 'puma'
 
+# Open graph parsing
+gem 'opengraph_parser'
+
 group :development do
   gem 'foreman'
   gem 'shotgun'
