@@ -162,3 +162,7 @@ get '/gif' do
 
   return result
 end
+
+get '/mitch' do
+  channel.post(Mitch::ONE_LINERS.sample)
+end
