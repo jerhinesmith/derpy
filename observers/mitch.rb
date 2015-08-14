@@ -8,7 +8,7 @@ class Mitch < ChannelObserver
   CHANCE_OF_MITCH = 0.25
 
   def call
-    your_words = incoming_text.text.gsub(/[^\w\s]/, '').split(' ').delete_if{|w| STOP_WORDS.include?(w)}.sort.uniq
+    your_words = incoming_message.text.gsub(/[^\w\s]/, '').split(' ').delete_if{|w| STOP_WORDS.include?(w)}.sort.uniq
 
     ONE_LINERS.shuffle.each do |one_liner|
       mitch_words  = one_liner.gsub(/[^\w\s]/, '').split(' ').delete_if{|w| STOP_WORDS.include?(w)}.sort.uniq
