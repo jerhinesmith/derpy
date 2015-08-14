@@ -21,7 +21,7 @@ class Mitch < ChannelObserver
           message = OutgoingMessage.new(
             channel:  "##{incoming_message.channel_name}",
             username: 'mitch',
-            icon_url: 'https://pbs.twimg.com/profile_images/1164297354/mitch1.jpg',
+            icon_url: 'http://i.imgur.com/bhDpHHS.jpg',
             text:     one_liner
           )
 
