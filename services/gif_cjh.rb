@@ -48,6 +48,20 @@ EOF
     end
   end
 
+  def gifs
+    data = {}
+
+    redis do |r|
+      keys = r.keys('*').sort
+      r.pipelined do
+        keys.each do |key|
+          data[key] = r.smembers(key)
+        end
+      end
+    end
+    data
+  end
+
 
   private
 

@@ -18,7 +18,7 @@ end
 slack_channel = ENV['SLACK_CHANNEL']
 channel = Channel.new(slack_channel, ENV['SLACK_INCOMING_PATH'])
 
-ENV['OBSERVERS'].split(',').each do |observer_klass|
+(ENV['OBSERVERS'] || "").split(',').each do |observer_klass|
   observer_klass.capitalize!
 
   channel.add_message_observer(Object.const_get(observer_klass)) if Object.const_defined?(observer_klass)
@@ -161,6 +161,11 @@ get '/gif' do
   end
 
   return result
+end
+
+get '/gifs' do
+  @gifs = GifCjh.new.gifs
+  erb :gifs
 end
 
 get '/mitch' do
