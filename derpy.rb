@@ -181,7 +181,7 @@ end
 
 get '/kc' do
   message = OutgoingMessage.new(
-    channel: params["channel_name"],
+    channel: "##{params["channel_name"]}",
     username: 'kc',
     icon_url: 'https://pbs.twimg.com/profile_images/1783197378/five-dollars-wadded.png',
     text: Kc.speak
