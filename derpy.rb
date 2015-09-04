@@ -178,3 +178,14 @@ get '/mitch' do
 
   channel.post(message)
 end
+
+get '/kc' do
+  message = OutgoingMessage.new(
+    channel: slack_channel,
+    username: 'kc',
+    icon_url: 'https://pbs.twimg.com/profile_images/1783197378/five-dollars-wadded.png',
+    text: Kc.speak
+  )
+
+  channel.post(message)
+end

@@ -9,18 +9,15 @@ class Kc
   ACCESS_TOKEN = "23369679-mAKj448qj40u3in93Ldw6HkooiOKspxnUwRNsloA7"
   ACCESS_SECRET = ENV["TWITTER_ACCESS_SECRET"]
 
-  attr_reader :tweets
-
-  def initialize
-    @tweets = _twitter_client.user_timeline(ACCOUNT_NAME, :count => NUMBER_OF_TWEETS)
-  end
-
-  def random_tweet
+  def self.speak
+    @tweets ||= twitter_client.user_timeline(ACCOUNT_NAME, :count => NUMBER_OF_TWEETS)
     @tweets.sample.text
   end
 
-  def _twitter_client
-    @twitter_client ||= Twitter::REST::Client.new do |config|
+  private
+
+  def self.twitter_client
+    Twitter::REST::Client.new do |config|
       config.consumer_key        = CONSUMER_KEY
       config.consumer_secret     = CONSUMER_SECRET
       config.access_token        = ACCESS_TOKEN
