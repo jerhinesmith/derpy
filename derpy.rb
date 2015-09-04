@@ -57,7 +57,7 @@ get '/cjh' do
   response = Cjh.call(params[:text])
 
   message = OutgoingMessage.new(
-    channel:  slack_channel,
+    channel: params["channel_name"],
     username: 'trollcjh',
     icon_url: 'http://i.imgur.com/w5yXDIe.jpg',
     text:     response
@@ -72,7 +72,7 @@ get '/raiders' do
 
   raider_bot = Raiders.new
   message = OutgoingMessage.new(
-    channel:  slack_channel,
+    channel: params["channel_name"],
     username: 'raidercjh',
     icon_url: Raiders::LOGO_URL
   )
@@ -118,7 +118,7 @@ get '/gif' do
   command = args.shift.to_s.to_sym
 
   message = OutgoingMessage.new(
-    channel:  slack_channel,
+    channel: params["channel_name"],
     username: 'gifcjh',
     icon_url: 'http://i.imgur.com/w5yXDIe.jpg'
   )
@@ -170,7 +170,7 @@ end
 
 get '/mitch' do
   message = OutgoingMessage.new(
-    channel:  slack_channel,
+    channel: params["channel_name"],
     username: 'mitch',
     icon_url: 'http://i.imgur.com/bhDpHHS.jpg',
     text:      Mitch::ONE_LINERS.sample
@@ -181,7 +181,7 @@ end
 
 get '/kc' do
   message = OutgoingMessage.new(
-    channel: slack_channel,
+    channel: params["channel_name"],
     username: 'kc',
     icon_url: 'https://pbs.twimg.com/profile_images/1783197378/five-dollars-wadded.png',
     text: Kc.speak
