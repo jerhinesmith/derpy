@@ -53,6 +53,21 @@ get '/test' do
   channel.post(message)
 end
 
+get '/r/:name' do
+  url  = "https://www.reddit.com/r/#{params[:name]}"
+  data = JSON.parse Faraday.get("#{url}/about/.json").body
+  if data['error'].nil?
+    message = OutgoingMessage.new(
+      channel:  slack_channel,
+      username: '/r/cjh',
+      icon_url: 'http://i.imgur.com/w5yXDIe.jpg',
+      text: "#{data['display_name']}: #{url}"
+    )
+
+    channel.post(message)
+  end
+end
+
 get '/cjh' do
   response = Cjh.call(params[:text])
 
