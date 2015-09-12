@@ -122,7 +122,7 @@ get '/raiders' do
 
     next_game.rsvp(user_name, response)
 
-    attachment = MessageAttachment.new(text: "Thanks, #{user_name}!")
+    attachment = MessageAttachment.new(text: "#{user_name} rsvp'd #{response}")
     message.attachments << attachment
   end
 
