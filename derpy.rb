@@ -67,7 +67,7 @@ get '/cjh' do
 end
 
 get '/raiders' do
-  args = params[:text].to_s.strip.split(" ")
+  args = params[:text].to_s.split(" ")
   command = args.shift
   command = :next if command.empty?
 
