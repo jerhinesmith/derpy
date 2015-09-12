@@ -1,5 +1,6 @@
 require 'icalendar'
 require 'open-uri'
+require 'redis'
 
 RaiderGame = Struct.new(:dtstart, :summary, :location_string) do
   def pst_start
@@ -41,13 +42,59 @@ RaiderGame = Struct.new(:dtstart, :summary, :location_string) do
   def emoji_summary
     home? ? "#{opponent_emoji} @ :raiders:" : ":raiders: @ #{opponent_emoji}"
   end
+
+  def rsvp(name, response)
+    redis do |r|
+      r.hset(redis_key, name, parse_rsvp(response))
+    end
+  end
+
+  def rsvp_list
+    output = ""
+    redis do |r|
+      r.hgetall(redis_key).each{|str| output.puts str}
+    end
+    output
+  end
+
+  private
+
+  def parse_rsvp(response)
+    response = response.downcase
+    if positive_rsvp_respones.include?(response)
+      "yes"
+    elsif negative_rsvp_responses.include?(response)
+      "no"
+    else
+      "maybe"
+    end
+  end
+
+  def positive_rsvp_responses
+    %w(yes yeah yep)
+  end
+
+  def negative_rsvp_responses
+    %w(no nope)
+  end
+
+  def redis_key
+    "raiders_rsvp_#{dtstart.to_date}"
+  end
+
+  def redis
+    @redis = Redis.new(url: ENV['REDISCLOUD_URL'])
+    result = yield @redis
+    @redis.quit
+    result
+  end
 end
 
 class Raiders
   SCHEDULE_URL = "http://www.raiders.com/cda-web/schedule-ics-module.ics?year=2015"
   LOGO_URL = "http://i.imgur.com/9UDbNnB.png"
 
-  def next
+  def next_game
     events.select{|e| e.dtstart >= DateTime.now}.first
   end
 

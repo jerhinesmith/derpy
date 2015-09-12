@@ -79,7 +79,7 @@ get '/raiders' do
 
   case command.to_sym
   when :next
-    next_game  = raider_bot.next
+    next_game  = raider_bot.next_game
     start_time = next_game.pst_start
 
     attachment = MessageAttachment.new(
@@ -100,11 +100,19 @@ get '/raiders' do
           title: 'Venue',
           value: next_game.location,
           short: true
-        }
+        },
+          attendence: 'RSVPs',
+          value: next_game.rsvp_list
       ]
     )
 
     message.attachments << attachment
+  when :rsvp
+    user_name = params[:user_name]
+    response = args.shift
+    next_game.rsvp(user_name, response)
+
+    message.attachments << "Thanks, #{user_name}!"
   end
 
   channel.post(message)
