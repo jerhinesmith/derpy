@@ -50,11 +50,9 @@ RaiderGame = Struct.new(:dtstart, :summary, :location_string) do
   end
 
   def rsvp_list
-    output = ""
     redis do |r|
-      r.hgetall(redis_key).each{|str| output.puts str}
+      r.hgetall(redis_key)
     end
-    output
   end
 
   private

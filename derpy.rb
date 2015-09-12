@@ -83,7 +83,7 @@ get '/raiders' do
     next_game  = raider_bot.next_game
     start_time = next_game.pst_start
 
-    attachment = MessageAttachment.new(
+    next_game_attachment = MessageAttachment.new(
       title:      "Next Game",
       text:       next_game.emoji_summary,
       fallback:   next_game.summary,
@@ -101,13 +101,20 @@ get '/raiders' do
           title: 'Venue',
           value: next_game.location,
           short: true
-        },
-          attendence: 'RSVPs',
-          value: next_game.rsvp_list
+        }
       ]
     )
 
-    message.attachments << attachment
+    rsvp_fields = next_game.rsvp_list.map do |name, response|
+      { title: name, value: response }
+    end
+    rsvp_attachment = MessageAttachment.new(
+      title: 'RSVPs',
+      fields: rsvp_fields
+    )
+
+    message.attachments << next_game_attachment
+    message.attachments << rsvp_attachment
   when :rsvp
     user_name = params[:user_name]
     response = args.shift
@@ -115,7 +122,8 @@ get '/raiders' do
 
     next_game.rsvp(user_name, response)
 
-    message.attachments << "Thanks, #{user_name}!"
+    attachment = MessageAttachments.new(text: "Thanks, #{user_name}!")
+    message.attachments << attachment
   end
 
   channel.post(message)
