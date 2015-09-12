@@ -67,7 +67,8 @@ get '/cjh' do
 end
 
 get '/raiders' do
-  command = params[:text].to_s.strip
+  args = params[:text].to_s.strip.split(" ")
+  command = args.shift
   command = :next if command.empty?
 
   raider_bot = Raiders.new
