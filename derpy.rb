@@ -111,6 +111,8 @@ get '/raiders' do
   when :rsvp
     user_name = params[:user_name]
     response = args.shift
+    next_game = raider_bot.next_game
+
     next_game.rsvp(user_name, response)
 
     message.attachments << "Thanks, #{user_name}!"
