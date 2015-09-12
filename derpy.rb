@@ -69,7 +69,7 @@ end
 get '/raiders' do
   args = params[:text].to_s.split(" ")
   command = args.shift
-  command = :next if command.empty?
+  command = :next if command.nil?
 
   raider_bot = Raiders.new
   message = OutgoingMessage.new(
