@@ -61,7 +61,7 @@ RaiderGame = Struct.new(:dtstart, :summary, :location_string) do
 
   def parse_rsvp(response)
     response = response.downcase
-    if positive_rsvp_respones.include?(response)
+    if positive_rsvp_responses.include?(response)
       "yes"
     elsif negative_rsvp_responses.include?(response)
       "no"
