@@ -75,7 +75,7 @@ class Raiders
   end
 
   def next_game
-    @next_game ||= events.select{|e| e.dtstart >= DateTime.now}.first
+    events.select{|e| e.dtstart >= DateTime.now}.first
   end
 
   def schedule
