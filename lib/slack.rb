@@ -17,6 +17,9 @@ module Slack
   end
 
   def self.mention_all_except(names)
-    USERNAMES - names
+    names_to_mention = USERNAMES - names
+    names_to_mention.map do |username|
+      module_eval "self.mention_#{username}"
+    end
   end
 end
