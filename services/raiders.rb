@@ -1,7 +1,7 @@
 require 'icalendar'
 require 'open-uri'
 require 'redis'
-require_relative 'lib/slack'
+require_relative '../lib/slack'
 
 RaiderGame = Struct.new(:dtstart, :summary, :location_string) do
   def pst_start
