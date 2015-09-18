@@ -62,7 +62,7 @@ RaiderGame = Struct.new(:dtstart, :summary, :location_string) do
     end
   end
 
-  def format_rsvp_no_list
+  def format_no_rsvp_list
     no_rsvp_list.map do |name|
       { value: "#{name}: please rsvp" }
     end
