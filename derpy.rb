@@ -61,7 +61,7 @@ get '/cjh' do
 end
 
 get '/raiders' do
-  args = ArgParser.new(params[:text])
+  args = ArgParser.new(params[:text]).to_hash
   raiders = Raiders.new(params.merge(:args => args))
 
   case args[:command]
