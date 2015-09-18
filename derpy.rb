@@ -64,7 +64,7 @@ get '/raiders' do
   args = ArgParser.new(params[:text]).to_hash
   raiders = Raiders.new(params.merge(:args => args))
 
-  case args[:command].to_sym
+  case args[:command].to_sym || :next
   when :next
     raiders.summary
   when :rsvp
