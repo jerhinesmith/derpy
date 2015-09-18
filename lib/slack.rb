@@ -17,7 +17,6 @@ module Slack
   end
 
   def self.mention_all_except(names)
-    unmentioned = USERNAMES - names
-    unmentioned.join(", ")
+    USERNAMES - names
   end
 end

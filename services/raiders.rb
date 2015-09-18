@@ -69,7 +69,8 @@ RaiderGame = Struct.new(:dtstart, :summary, :location_string) do
   end
 
   def no_rsvp_list
-    Slack.usernames - rsvp_list.map(&:first)
+    names = rsvp_list.map(&:first)
+    Slack.mention_all_except(names)
   end
 
   def rsvp_list
