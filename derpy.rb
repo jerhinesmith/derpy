@@ -2,6 +2,7 @@ require 'sinatra'
 require 'newrelic_rpm'
 require 'faraday'
 require 'json'
+require 'pry'
 
 Dir.glob(File.join(File.dirname(__FILE__), 'models', '*.rb')).each do |model|
   require model
@@ -67,63 +68,17 @@ get '/cjh' do
 end
 
 get '/raiders' do
-  args = params[:text].to_s.split(" ")
-  command = args.shift
-  command = :next if command.nil?
+  args = ArgParser.new(params[:text])
+  raiders = Raiders.new(params.merge(:args => args)
 
-  raider_bot = Raiders.new
-  message = OutgoingMessage.new(
-    channel: "##{params["channel_name"]}",
-    username: 'raidercjh',
-    icon_url: Raiders::LOGO_URL
-  )
-
-  case command.to_sym
+  case args[:command]
   when :next
-    next_game  = raider_bot.next_game
-    start_time = next_game.pst_start
-
-    next_game_attachment = MessageAttachment.new(
-      title:      "Next Game",
-      text:       next_game.emoji_summary,
-      fallback:   next_game.summary,
-      fields:     [
-        {
-          title: 'Opponent',
-          value: next_game.opponent
-        },
-        {
-          title: 'Date',
-          value: start_time.strftime('%B %d, %Y @ %l:%M %P'),
-          short: true
-        },
-        {
-          title: 'Venue',
-          value: next_game.location,
-          short: true
-        }
-      ]
-    )
-
-    rsvp_attachment = MessageAttachment.new(
-      title: 'RSVPs',
-      fields: next_game.rsvp_fields
-    )
-
-    message.attachments << next_game_attachment
-    message.attachments << rsvp_attachment
+    raiders.summary
   when :rsvp
-    user_name = params[:user_name]
-    response = args.shift
-    next_game = raider_bot.next_game
-
-    next_game.rsvp(user_name, response)
-
-    attachment = MessageAttachment.new(text: "#{user_name} rsvp'd #{response}")
-    message.attachments << attachment
+    raiders.rsvp!
   end
 
-  channel.post(message)
+  channel.post(raider.message)
 end
 
 get '/gif' do

@@ -1,121 +1,81 @@
 require 'icalendar'
 require 'open-uri'
-require 'redis'
-require_relative '../lib/slack'
-
-RaiderGame = Struct.new(:dtstart, :summary, :location_string) do
-  def pst_start
-    dtstart.new_offset('-0700')
-  end
-
-  def teams
-    summary.split(' at ')
-  end
-
-  def home?
-    teams.last == 'Oakland Raiders'
-  end
-
-  def opponent
-    teams.delete_if{|t| t == 'Oakland Raiders'}.first
-  end
-
-  def location
-    location_string.join(',')
-  end
-
-  def city
-    location_string[1].strip
-  end
-
-  def venue
-    location_string[0].strip
-  end
-
-  def state
-    location_string[2].strip
-  end
-
-  def opponent_emoji
-    ":#{opponent.split(/\W/).last.downcase}:"
-  end
-
-  def emoji_summary
-    home? ? "#{opponent_emoji} @ :raiders:" : ":raiders: @ #{opponent_emoji}"
-  end
-
-  def rsvp(name, response)
-    redis do |r|
-      r.hset(redis_key, name, parse_rsvp(response))
-    end
-  end
-
-  def rsvp_fields
-    (format_rsvp_list + format_no_rsvp_list)
-  end
-
-  private
-
-  def format_rsvp_list
-    rsvp_list.map do |name, response|
-      { value: "#{name}: #{response}" }
-    end
-  end
-
-  def format_no_rsvp_list
-    no_rsvp_list.map do |name|
-      { value: "#{name}: please rsvp" }
-    end
-  end
-
-  def no_rsvp_list
-    names = rsvp_list.map(&:first)
-    Slack.mention_all_except(names)
-  end
-
-  def rsvp_list
-    redis do |r|
-      r.hgetall(redis_key)
-    end
-  end
-
-  def parse_rsvp(response)
-    response = response.downcase
-    if positive_rsvp_responses.include?(response)
-      "yes"
-    elsif negative_rsvp_responses.include?(response)
-      "no"
-    else
-      "maybe"
-    end
-  end
-
-  def positive_rsvp_responses
-    %w(yes yeah yep)
-  end
-
-  def negative_rsvp_responses
-    %w(no nope)
-  end
-
-  def redis_key
-    "raiders_rsvp_#{dtstart.to_date}"
-  end
-
-  def redis
-    @redis = Redis.new(url: ENV['REDISCLOUD_URL'])
-    result = yield @redis
-    @redis.quit
-    result
-  end
-end
+require_relative "../models/outgoing_message"
+require_relative "../models/message_attachment"
+require_relative "raiders/game"
 
 class Raiders
   SCHEDULE_URL = "http://www.raiders.com/cda-web/schedule-ics-module.ics?year=2015"
   LOGO_URL = "http://i.imgur.com/9UDbNnB.png"
+  USERNAME = 'raidercjh'
+
+  attr_reader :message
+
+  def initialize(options={})
+    @response = options[:args][:text]
+    @channel_name = "##{options[:channel_name]}"
+    @user_name = options[:user_name]
+    @message = default_message
+  end
+
+  def summary
+    @message.attachments << next_game_attachment
+    @message.attachments << rsvp_list_attachment
+  end
+
+  def rsvp!
+    next_game.rsvp!(@user_name, @response)
+    @message.attachments << single_rsvp_attachment
+  end
+
+  private
+
+
+  def default_message
+    OutgoingMessage.new(
+      channel: @channel_name,
+      username: USERNAME,
+      icon_url: LOGO_URL
+    )
+  end
+
+  def single_rsvp_attachment
+    MessageAttachment.new(text: "#{@user_name} rsvp'd #{@response}")
+  end
+
+  def next_game_attachment
+    MessageAttachment.new(
+      title:      "Next Game",
+      text:       next_game.emoji_summary,
+      fallback:   next_game.summary,
+      fields:     [
+        {
+          title: 'Opponent',
+          value: next_game.opponent
+        },
+        {
+          title: 'Date',
+          value: next_game.start_time,
+          short: true
+        },
+        {
+          title: 'Venue',
+          value: next_game.location,
+          short: true
+        }
+      ]
+    )
+  end
+
+  def rsvp_list_attachment
+    MessageAttachment.new(
+      title: 'RSVPs',
+      fields: next_game.rsvp_fields
+    )
+  end
 
   def next_game
-    events.select{|e| e.dtstart >= DateTime.now}.first
+    @next_game ||= events.select{|e| e.dtstart >= DateTime.now}.first
   end
 
   def schedule
@@ -123,6 +83,8 @@ class Raiders
   end
 
   def events
-    @events ||= schedule.events.sort_by{|e| e.dtstart}.collect{|e| RaiderGame.new(e.dtstart, e.summary, e.location)}
+    @events ||= schedule.events.sort_by{|e| e.dtstart}.collect do |e|
+      Raiders::Game.new(e.dtstart, e.summary, e.location)
+    end
   end
 end
