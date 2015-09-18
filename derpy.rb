@@ -2,7 +2,6 @@ require 'sinatra'
 require 'newrelic_rpm'
 require 'faraday'
 require 'json'
-require 'pry'
 
 Dir.glob(File.join(File.dirname(__FILE__), 'models', '*.rb')).each do |model|
   require model
