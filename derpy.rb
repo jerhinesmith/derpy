@@ -69,7 +69,7 @@ end
 
 get '/raiders' do
   args = ArgParser.new(params[:text])
-  raiders = Raiders.new(params.merge(:args => args)
+  raiders = Raiders.new(params.merge(:args => args))
 
   case args[:command]
   when :next
