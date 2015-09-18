@@ -3,16 +3,10 @@ require 'newrelic_rpm'
 require 'faraday'
 require 'json'
 
-Dir.glob(File.join(File.dirname(__FILE__), 'models', '*.rb')).each do |model|
-  require model
-end
-
-Dir.glob(File.join(File.dirname(__FILE__), 'services', '*.rb')).each do |service|
-  require service
-end
-
-Dir.glob(File.join(File.dirname(__FILE__), 'observers', '*.rb')).each do |observer|
-  require observer
+%w(models services observers lib).each do |dir|
+  Dir.glob(File.join(File.dirname(__FILE__), dir, '*.rb')).each do |file|
+    require file
+  end
 end
 
 slack_channel = ENV['SLACK_CHANNEL']
