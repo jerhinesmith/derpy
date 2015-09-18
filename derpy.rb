@@ -71,7 +71,7 @@ get '/raiders' do
     raiders.rsvp!
   end
 
-  channel.post(raider.message)
+  channel.post(raiders.message)
 end
 
 get '/gif' do
