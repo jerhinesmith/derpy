@@ -105,12 +105,9 @@ get '/raiders' do
       ]
     )
 
-    rsvp_fields = next_game.rsvp_list.map do |name, response|
-      { value: "#{name}: #{response}" }
-    end
     rsvp_attachment = MessageAttachment.new(
       title: 'RSVPs',
-      fields: rsvp_fields
+      fields: next_game.rsvp_fields
     )
 
     message.attachments << next_game_attachment

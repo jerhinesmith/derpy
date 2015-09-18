@@ -1,6 +1,7 @@
 require 'icalendar'
 require 'open-uri'
 require 'redis'
+require_relative 'lib/slack'
 
 RaiderGame = Struct.new(:dtstart, :summary, :location_string) do
   def pst_start
@@ -49,13 +50,33 @@ RaiderGame = Struct.new(:dtstart, :summary, :location_string) do
     end
   end
 
+  def rsvp_fields
+    (format_rsvp_list + format_no_rsvp_list)
+  end
+
+  private
+
+  def format_rsvp_list
+    rsvp_list.map do |name, response|
+      { value: "#{name}: #{response}" }
+    end
+  end
+
+  def format_rsvp_no_list
+    no_rsvp_list.map do |name|
+      { value: "#{name}: please rsvp" }
+    end
+  end
+
+  def no_rsvp_list
+    Slack.usernames - rsvp_list.map(&:first)
+  end
+
   def rsvp_list
     redis do |r|
       r.hgetall(redis_key)
     end
   end
-
-  private
 
   def parse_rsvp(response)
     response = response.downcase
