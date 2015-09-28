@@ -3,8 +3,8 @@ require 'opengraph_parser'
 
 class Reddit < ChannelObserver
   def call
-    if incoming_message.text =~ /(\/r\/\w+)/i
-      reddit_url = "https://www.reddit.com#{$1}"
+    if incoming_message.text =~ /(^|\W)(\/r\/\w+)/i
+      reddit_url = "https://www.reddit.com#{$2.strip}"
       open_graph = OpenGraph.new(reddit_url)
 
       message = OutgoingMessage.new(
