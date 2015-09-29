@@ -68,7 +68,6 @@ EOF
         end
       end
     end
-
     data
   end
 
