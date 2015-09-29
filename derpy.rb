@@ -78,6 +78,9 @@ end
 get '/gif' do
   result = nil
   gif_cjh = GifCjh.new
+  if gif_cjh.list(nil).empty?
+    gif_cjh.migrate!
+  end
   input = params[:text]
   args = input.to_s.split(" ")
   command = args.shift.to_s.to_sym
@@ -103,7 +106,7 @@ get '/gif' do
       result = success ? "Removed #{key}: #{url}" : "Unable to remove key: url"
 
     when :"", :list
-      result = gif_cjh.list
+      result = gif_cjh.list('gifs', false).join(", ")
 
     when :show
       key = args.first

@@ -22,7 +22,7 @@ class Channel
 
   def post(outgoing_message)
     connection.post do |req|
-      req.url @incoming_path
+      req.url incoming_path
       req.headers['Content-Type'] = 'application/json'
       req.body = outgoing_message.to_json
     end
