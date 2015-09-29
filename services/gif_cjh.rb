@@ -68,20 +68,6 @@ EOF
     data
   end
 
-  def migrate!
-    prior = gifs(nil).reject{|k,_| k =~ /raiders_rsvp/ }
-
-    redis do |r|
-      prior.each_pair do |key, arr|
-        urls = arr.value
-        r.sadd("#{SCOPE}/#{key}", urls)
-        urls.each do |url|
-          r.srem(key, url)
-        end
-      end
-    end
-  end
-
   private
 
   def redis
