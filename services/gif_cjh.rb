@@ -4,6 +4,7 @@ require 'json'
 require 'redis'
 
 class GifCjh
+  SCOPE = 'gifs'
   HELP = <<EOF
 
 /gif                         returns a list of possible keys
@@ -15,8 +16,11 @@ class GifCjh
 EOF
 
   def get(tag)
+    key = sanitize_key(tag)
+    return unless key && key.to_s.size > 0
+
     redis do |r|
-      r.srandmember(tag.to_s.to_sym)
+      r.srandmember(key.to_sym)
     end
   end
 
@@ -42,17 +46,19 @@ EOF
     end
   end
 
-  def list
+  def list(prefix = SCOPE, prefixed = true)
+    key = prefix.nil? ? '*' : "#{prefix}/*"
     redis do |r|
-      r.keys("*").sort.join(", ")
+      keys = r.keys(key).sort
+      prefixed ? keys : keys.map{|k| k.gsub("#{prefix}/", '') }
     end
   end
 
-  def gifs
+  def gifs(prefix = SCOPE)
     data = {}
-
+    key = prefix.nil? ? '*' : "#{prefix}/*"
     redis do |r|
-      keys = r.keys('*').sort
+      keys = r.keys(key).sort
       r.pipelined do
         keys.each do |key|
           data[key] = r.smembers(key)
@@ -62,6 +68,19 @@ EOF
     data
   end
 
+  def migrate!
+    prior = gifs(nil).reject{|k,_| k =~ /raiders_rsvp/ }
+
+    redis do |r|
+      prior.each_pair do |key, arr|
+        urls = arr.value
+        r.sadd("#{SCOPE}/#{key}", urls)
+        urls.each do |url|
+          r.srem(key, url)
+        end
+      end
+    end
+  end
 
   private
 
@@ -73,6 +92,8 @@ EOF
   end
 
   def sanitize_key(key)
-    key.to_s.downcase.gsub(/\s/, '')
+    key = key.to_s.downcase.gsub(/\s/, '')
+    return unless key.to_s.size > 0
+    "#{SCOPE}/#{key}"
   end
 end
