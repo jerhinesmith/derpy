@@ -1,8 +1,10 @@
-require 'redis'
 require_relative '../../lib/slack'
+require_relative '../../lib/redis_wrapper'
 
 class Raiders
   class Game
+    include RedisWrapper
+
     attr_reader :dtstart, :summary, :location_string
 
     def initialize(dtstart, summary, location_string)
@@ -111,13 +113,6 @@ class Raiders
 
     def redis_key
       "raiders_rsvp_#{dtstart.to_date}"
-    end
-
-    def redis
-      @redis = Redis.new(url: ENV['REDISCLOUD_URL'])
-      result = yield @redis
-      @redis.quit
-      result
     end
   end
 end

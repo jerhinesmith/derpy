@@ -30,7 +30,6 @@ class Raiders
 
   private
 
-
   def default_message
     OutgoingMessage.new(
       channel: @channel_name,

@@ -1,9 +1,12 @@
 require 'open-uri'
 require 'faraday'
 require 'json'
-require 'redis'
+require_relative '../lib/redis_wrapper'
 
 class GifCjh
+
+  include RedisWrapper
+
   SCOPE = 'gifs'
   HELP = <<EOF
 
@@ -69,13 +72,6 @@ EOF
   end
 
   private
-
-  def redis
-    @redis = Redis.new(url: ENV['REDISCLOUD_URL'])
-    result = yield @redis
-    @redis.quit
-    result
-  end
 
   def sanitize_key(key)
     key = key.to_s.downcase.gsub(/\s/, '')
