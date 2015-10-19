@@ -1,7 +1,7 @@
 require 'cgi'
 
 class Presenter
-  attr_accessor :text, :events, :result, :channel_name
+  attr_accessor :text, :events, :result, :channel_name, :rsvp
 
   def initialize(options = {})
     @channel_name = "##{options[:channel_name]}"
@@ -17,7 +17,7 @@ class Presenter
     })
 
     # If there are values in any of these attributes, add their attachments
-    %w(events result).each do |section|
+    %w(events result rsvp).each do |section|
       if value = self.send(section.to_sym)
         puts "Adding #{section}: #{value}"
         message.attachments += [*send("#{section}_attachment".to_sym)]
@@ -36,6 +36,23 @@ class Presenter
 
   def events_attachment
     events.flatten.map{|e| event_to_attachment(e) }
+  end
+
+  def rsvp_attachment
+    result = if rsvp[:response] == 'yes'
+               ":white_check_mark: #{rsvp[:name]} is attending"
+             elsif rsvp[:response] == 'no'
+               ":x: #{rsvp[:name]} is not attending"
+             else
+               ":speech_balloon: #{rsvp[:name]} might go"
+             end
+
+    MessageAttachment.new({
+      title:      "#{event.name} ##{event.tag}",
+      text:       result,
+      color:      '#7CD197',
+      fallback:   "#{event.name} - #{result}"
+    })
   end
 
   def event_to_attachment(event)

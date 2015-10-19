@@ -73,8 +73,8 @@ EOF
       raise StandardError, "No event found for: #{id}"
     end
 
-    event.rsvp!(username, response)
-    presenter.event = event
+    rsvp = event.rsvp!(username, response)
+    presenter.rsvp = rsvp.merge(event: event)
   end
 
   def tag

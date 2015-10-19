@@ -141,8 +141,6 @@ get '/event' do
   rescue StandardError => e
     return e.message
   end
-
-  ""
 end
 
 get '/mitch' do

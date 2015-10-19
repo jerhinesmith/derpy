@@ -23,8 +23,10 @@ class Rsvp
     responses.select{|_, response| response == 'no' }
   end
 
-  def rsvp!(name, response)
-    store.hash_set(key, name, parse_rsvp(response))
+  def rsvp!(name, text)
+    response = parse_rsvp(text)
+    store.hash_set(key, name, response)
+    { name: name, response: response }
   end
 
   private
