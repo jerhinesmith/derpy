@@ -63,7 +63,7 @@ EOF
       raise StandardError, "You must provide a tag for your event."
     end
 
-    create_event!(text)
+    presenter.event = create_event!(text)
   end
 
   def rsvp
@@ -108,7 +108,7 @@ EOF
     if Event.find(id)
       raise StandardError, "Tag is already taken:\n#{text}"
     else
-      Event.parse(text)
+      return Event.parse(text)
     end
   end
 end
