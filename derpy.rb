@@ -3,7 +3,7 @@ require 'newrelic_rpm'
 require 'faraday'
 require 'json'
 
-%w(models services observers lib).each do |dir|
+%w(controllers models services observers lib).each do |dir|
   Dir.glob(File.join(File.dirname(__FILE__), dir, '*.rb')).each do |file|
     require file
   end
@@ -131,6 +131,16 @@ end
 get '/gifs' do
   @gifs = GifCjh.new.gifs
   erb :gifs
+end
+
+get '/event' do
+  controller = EventsController.new(channel, params)
+
+  begin
+    controller.respond
+  rescue StandardError => e
+    return e.message
+  end
 end
 
 get '/mitch' do

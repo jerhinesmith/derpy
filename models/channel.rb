@@ -21,11 +21,17 @@ class Channel
   end
 
   def post(outgoing_message)
-    connection.post do |req|
+    response = connection.post do |req|
       req.url incoming_path
       req.headers['Content-Type'] = 'application/json'
       req.body = outgoing_message.to_json
     end
+
+    if response.status != 200
+      puts "Non-Successful Response: #{response.env.body}"
+    end
+
+    response
   end
 
   private
