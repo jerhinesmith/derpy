@@ -47,6 +47,7 @@ class Presenter
                ":speech_balloon: #{rsvp[:name]} might go"
              end
 
+    event = rsvp[:event]
     MessageAttachment.new({
       title:      "#{event.name} ##{event.tag}",
       text:       result,
