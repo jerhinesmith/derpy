@@ -1,4 +1,4 @@
-require './derpy_controller'
+require_relative './derpy_controller'
 
 class EventsController < DerpyController
   HELP = <<EOF
