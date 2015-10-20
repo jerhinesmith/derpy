@@ -39,7 +39,7 @@
   </style>
 </head>
 <body>
-  <% @gifs.each do |k, v| %>
+  <% @gifs.each do |key, v| %>
     <% v.value.each do |src| %>
       <div class="gif">
         <div class="thumbnail">
@@ -48,7 +48,7 @@
           </a>
         </div>
         <div>
-          <span><%= k %></span>
+          <span><%= key %></span>
         </div>
       </div>
     <% end %>

@@ -43,7 +43,7 @@ class Event
   end
 
   def self.tags
-    store.keys.select{|k| k.match(/^events\/tags/) }.map{|key| key.gsub('events/tags/', '') }
+    store.keys('tags/*')
   end
 
   def self.tag(id, tag)

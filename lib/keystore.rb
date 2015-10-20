@@ -9,8 +9,11 @@ class Keystore
     @scope = scope
   end
 
-  def keys
-    redis{|r| r.keys }
+  def keys(scope = '*', full_path = false)
+    results = []
+    redis{|r| results = r.keys(scoped(scope)) }
+    return results if full_path
+    filter(results, scope)
   end
 
   def get(key)
@@ -19,6 +22,14 @@ class Keystore
 
   def set(key, value)
     redis{|r| r.set(scoped(key), value) }
+  end
+
+  def add(key, value)
+    redis{|r| r.sadd(scoped(key), value) }
+  end
+
+  def remove(key, value)
+    redis{|r| r.srem(scoped(key), value) }
   end
 
   def list(key)
@@ -55,5 +66,14 @@ class Keystore
 
   def scoped(key)
     [scope, key].join('/')
+  end
+
+  def sanitized(key)
+    key.to_s.downcase.gsub(/\s/, '')
+  end
+
+  def filter(keys, scope)
+    elements = scope.split('/')[0..-2]
+    keys.map{|key| key.gsub(/^.*#{elements.last}\//, '') }
   end
 end
