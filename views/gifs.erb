@@ -44,7 +44,11 @@
       <div class="gif">
         <div class="thumbnail">
           <a href="<%= src %>">
-            <img src="<%= src %>" target="_none" />
+            <% if src =~ /gifv/ %>
+              <video src="<%= src %>" target="_none" />
+            <% else %>
+              <img src="<%= src %>" target="_none" />
+            <% end %>
           </a>
         </div>
         <div>
