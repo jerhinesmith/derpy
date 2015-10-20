@@ -18,7 +18,7 @@ EOF
 
   attr_reader :key, :url
 
-  def initialize(key, url = nil)
+  def initialize(key = nil, url = nil)
     @key = key.to_s
     @url = url.to_s
   end
@@ -42,7 +42,7 @@ EOF
     store.keys(scope, full_path).sort
   end
 
-  def gifs(prefix = SCOPE)
+  def gifs
     keys = store.keys('*', true).sort
 
     data = {}
