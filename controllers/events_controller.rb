@@ -1,96 +1,91 @@
-class EventsController
-  attr_reader :channel, :params, :command, :text, :username, :presenter
-
-  ENDPOINTS = [:create, :tag, :list, :update, :rsvp, :help]
-
+class EventsController < DerpyController
   HELP = <<EOF
+Event system, examples using #foo as the tag for our event.
 
-/event TAG
-  Show all the info on an event
+/event foo                        Show all info about this event
+/event rsvp foo yes|no|maybe      RSVP for this event
+/event create bar                 Create an event with the "bar" tag
+/event help                       Show this list
+/event man                        Show extended help info for /event
+===
+## /event TAG
+    Show all the info on an event
 
-/event create TAG [|NAME|DATE|BODY|LOCATION|IMAGE_URL|LINK]
-  Create a new event delimited by the pipe "|". TAG is required
-  ex: /event create foo|My Title
-  ex: /event create umm|Weird Dungeon Sex Party|2015-11-13 23:00PST||Chez Vukicevich
+## /event rsvp TAG RESPONSE
+    Mark your rsvp to this event (yes, no, maybe)
 
-/event list
-  List all the tags for existing events
+## /event list
+    List all the tags for existing events
 
-/event rsvp TAG RESPONSE
-  - Mark your rsvp to this event (yes, no, maybe)
+## /event create TAG [|NAME|DATE|BODY|LOCATION|IMAGE_URL|LINK]
+    Create a new event delimited by the pipe "|". TAG is required
+    ex: /event create foo|My Title
+    ex: /event create umm|Weird Dungeon Sex Party|2015-11-13 23:00PST||Chez Vukicevich
 
-/event update TAG FIELD VALUE     Update a field for an event
-  ex: /event update chabot name Chabot Glamping
-  Fields:
-    - name ( Chabot Camping )
-    - date ( 2015-10-16 18:00PST )
-    - body ( Let's camp like the Raiders win, barely and intermittently )
-    - link ( http://www.ebparks.org/parks/anthony_chabot )
-    - image_url ( http://i.imgur.com/AMmEwYN.jpg )
-    - location ( Anthony Chabot Regional Park )
+## /event update TAG FIELD VALUE     Update a field for an event
+    ex: /event update chabot name Chabot Glamping
+    Fields:
+      - name ( Chabot Camping )
+      - date ( 2015-10-16 18:00PST )
+      - body ( Let's camp like the Raiders win, barely and intermittently )
+      - link ( http://www.ebparks.org/parks/anthony_chabot )
+      - image_url ( http://i.imgur.com/AMmEwYN.jpg )
+      - location ( Anthony Chabot Regional Park )
 
-/event help                       Returns this list
+## /event man                       Returns this list
 EOF
 
-  def initialize(channel, params)
-    puts "  Params: #{params.inspect}"
-    @channel = channel
-    @params  = params
-    @username = params[:user_name]
-    args = params['text'].to_s.match(/([\w|-]*)(.*)/)
-    @command = args[1].to_sym
-    @text    = args[2].strip
-    @presenter = Presenter.new(params)
-  end
-
-  def respond
-    if ENDPOINTS.include?(command)
-      send(command)
+  def index
+    event = Event.find(command)
+    if event
+      presenter.event = event
     else
-      event = Event.find(command)
-      if event
-        presenter.event = event
-      else
-        raise StandardError, "No event found for: #{command}"
-      end
+      presenter.response = "No event found for: #{command}"
     end
-
-    channel.post(presenter.content)
   end
 
   def create
     if text == ""
-      raise StandardError, "You must provide a tag for your event."
+      presenter.response = "You must provide a tag for your event."
+      return
     end
 
-    presenter.event = create_event!(text)
+    event = create_event!(text)
+    if event.nil?
+      presenter.response = "Tag is already taken:\n#{text}"
+      return
+    end
+
+    presenter.event = event
   end
 
   def rsvp
     id, response = *text.split(' ')
     event = Event.find(id)
     if event.nil?
-      raise StandardError, "No event found for: #{id}"
+      presenter.response = "No event found for: #{id}"
+      return
     end
 
-    rsvp = event.rsvp!(username, response)
+    rsvp = event.rsvp!(params[:user_name], response)
     presenter.rsvp = rsvp.merge(event: event)
   end
 
   def tag
     Event.tag(*text.split(' '))
-    raise StandardError, "Tagged event"
+    presenter.response = "Tagged event"
   end
 
   def list
     events = Event.tags
-    raise StandardError, (events.empty? ? 'No Events to show' : events.join(", "))
+    presenter.response = (events.empty? ? 'No Events to show' : events.join(", "))
   end
 
   def update
     _, id, attribute, value = *text.lstrip.match(/(\w*)\s(\w*)\s(.*)/)
     unless event = Event.find(id)
-      raise StandardError, "No event found for: #{id}"
+      presenter.response = "No event found for: #{id}"
+      return
     end
 
     event.update(attribute => value)
@@ -98,17 +93,19 @@ EOF
   end
 
   def help
-    raise StandardError, EventsController::HELP
+    presenter.response = EventsController::HELP.split('===').first
+  end
+
+  def man
+    presenter.response = EventsController::HELP.split('===').last
   end
 
   private
 
   def create_event!(text)
     id, _ = text.split('|')
-    if Event.find(id)
-      raise StandardError, "Tag is already taken:\n#{text}"
-    else
-      return Event.parse(text)
-    end
+    return if Event.find(id)
+
+    Event.parse(text)
   end
 end

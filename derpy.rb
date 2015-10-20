@@ -3,14 +3,13 @@ require 'newrelic_rpm'
 require 'faraday'
 require 'json'
 
-%w(controllers models services observers lib).each do |dir|
+%w(controllers models presenters services observers lib).each do |dir|
   Dir.glob(File.join(File.dirname(__FILE__), dir, '*.rb')).each do |file|
     require file
   end
 end
 
-slack_channel = ENV['SLACK_CHANNEL']
-channel = Channel.new(slack_channel, ENV['SLACK_INCOMING_PATH'])
+channel = Channel.new(ENV['SLACK_CHANNEL'], ENV['SLACK_INCOMING_PATH'])
 
 (ENV['OBSERVERS'] || "").split(',').each do |observer_klass|
   observer_klass.capitalize!
@@ -75,72 +74,21 @@ get '/raiders' do
   channel.post(raiders.message)
 end
 
+get '/event' do
+  presenter = EventPresenter.new(channel, params)
+  EventsController.new(presenter, params).process
+  presenter.present
+end
+
 get '/gif' do
-  result = nil
-  gif_cjh = GifCjh.new
-  input = params[:text]
-  args = input.to_s.split(" ")
-  command = args.shift.to_s.to_sym
-
-  message = OutgoingMessage.new(
-    channel: "##{params["channel_name"]}",
-    username: 'gifcjh',
-    icon_url: 'http://i.imgur.com/w5yXDIe.jpg'
-  )
-
-  case command
-    when :help
-      result = GifCjh::HELP
-
-    when :add
-      key, url = args
-      success = gif_cjh.add(key, url)
-      result = success ? "Added #{key}: #{url}" : "Unable to add key: url"
-
-    when :remove
-      key, url = args
-      success = gif_cjh.remove(key, url)
-      result = success ? "Removed #{key}: #{url}" : "Unable to remove key: url"
-
-    when :"", :list
-      result = gif_cjh.list('gifs', false).join(", ")
-
-    when :show
-      key = args.first
-      url = gif_cjh.get(key)
-      result = url ? url : "Unable to get key: #{key}"
-
-    else # got a key
-      if image_url = gif_cjh.get(input)
-        message.attachments << MessageAttachment.new(
-          fallback:  input,
-          author_name: params[:user_name],
-          text: input,
-          image_url: image_url
-        )
-
-        channel.post(message)
-      else
-        result = "No match for #{input}"
-      end
-  end
-
-  return result
+  presenter = GifPresenter.new(channel, params)
+  GifsController.new(presenter, params).process
+  presenter.present
 end
 
 get '/gifs' do
   @gifs = GifCjh.new.gifs
   erb :gifs
-end
-
-get '/event' do
-  controller = EventsController.new(channel, params)
-
-  begin
-    controller.respond
-  rescue StandardError => e
-    return e.message
-  end
 end
 
 get '/mitch' do

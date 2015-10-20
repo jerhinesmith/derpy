@@ -1,38 +1,19 @@
 require 'cgi'
 
-class Presenter
-  attr_accessor :text, :events, :result, :channel_name, :rsvp
+class EventPresenter < Presenter
+  attr_accessor :events, :rsvp
 
-  def initialize(options = {})
-    @channel_name = "##{options[:channel_name]}"
-    @user_name = options[:user_name]
-  end
-
-  def content
-    message = OutgoingMessage.new({
-      text: text,
+  def message
+    @message ||= OutgoingMessage.new({
       channel: channel_name,
       username: 'eventcjh',
       icon_url: 'http://i.imgur.com/w5yXDIe.jpg'
     })
-
-    # If there are values in any of these attributes, add their attachments
-    %w(events result rsvp).each do |section|
-      if value = self.send(section.to_sym)
-        puts "Adding #{section}: #{value}"
-        message.attachments += [*send("#{section}_attachment".to_sym)]
-      end
-    end
-
-    message
   end
 
-  # Convenience Methods
   def event=(ev)
     self.events = (events || []) + [ev]
   end
-
-  private
 
   def events_attachment
     events.flatten.map{|e| event_to_attachment(e) }
@@ -55,6 +36,8 @@ class Presenter
       fallback:   "#{event.name} - #{result}"
     })
   end
+
+  private
 
   def event_to_attachment(event)
     location_link = nil
@@ -102,9 +85,5 @@ class Presenter
       mrkdwn_in:  ['fields'],
       fields:     fields
     })
-  end
-
-  def result_attachment
-    MessageAttachment.new(text: result)
   end
 end
