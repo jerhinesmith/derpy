@@ -1,3 +1,5 @@
+require './derpy_controller'
+
 class EventsController < DerpyController
   HELP = <<EOF
 Event system, examples using #foo as the tag for our event.

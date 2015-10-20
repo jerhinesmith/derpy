@@ -1,4 +1,5 @@
 require 'cgi'
+require './derpy_controller'
 
 class EventPresenter < Presenter
   attr_accessor :events, :rsvp

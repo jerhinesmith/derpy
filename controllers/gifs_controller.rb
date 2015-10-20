@@ -1,3 +1,5 @@
+require './derpy_controller'
+
 class GifsController < DerpyController
   attr_reader :key, :url
 

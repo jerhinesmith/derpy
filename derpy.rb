@@ -1,3 +1,5 @@
+$:.unshift File.dirname(__FILE__)
+
 require 'sinatra'
 require 'newrelic_rpm'
 require 'faraday'

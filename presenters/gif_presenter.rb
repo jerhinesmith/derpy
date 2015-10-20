@@ -1,3 +1,5 @@
+require './presenter'
+
 class GifPresenter < Presenter
   attr_accessor :gif
 

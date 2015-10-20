@@ -1,3 +1,5 @@
+require './presenter'
+
 class Presenter
   attr_accessor :channel, :response, :channel_name
 
