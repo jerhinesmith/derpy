@@ -29,7 +29,7 @@ class Event
   end
 
   def self.find_by_tag(tag_name)
-    id = store.get("tags/#{tag_name}")
+    id = store.get("tags/#{tag_name.to_s.gsub('#', '')}")
     return unless id
     find_by_id(id)
   end
