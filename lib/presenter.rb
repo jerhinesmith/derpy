@@ -50,7 +50,7 @@ class Presenter
       result += ":white_check_mark: #{rsvp[:name]} is attending"
       people = event.rsvp.attending.keys.reject{|name| name == rsvp[:name] }
       if people.length > 0
-        result += ", along with #{people.join(', ')}."
+        result += " along with #{humanized_list(people)}."
       else
         result += ". Alone."
       end
@@ -58,7 +58,7 @@ class Presenter
       result += ":x: #{rsvp[:name]} is pussing out"
       people = event.rsvp.skipping.keys.reject{|name| name == rsvp[:name] }
       if people.length > 0
-        result += ", joining #{people.join(', ')}."
+        result += ", joining #{humanized_list(people)}."
       else
         result += ", because he's got so many better things to do."
       end
@@ -124,5 +124,13 @@ class Presenter
 
   def result_attachment
     MessageAttachment.new(text: result)
+  end
+
+  def humanized_list(list)
+    last = list.pop if list.length > 1
+
+    result = list.join(', ')
+    result += " and #{last}" if last
+    result
   end
 end
