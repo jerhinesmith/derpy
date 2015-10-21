@@ -5,6 +5,9 @@ class EventsController
 
   HELP = <<EOF
 
+/event
+  View upcoming events
+
 /event TAG
   Show all the info on an event
 
@@ -48,8 +51,14 @@ EOF
   end
 
   def respond
+    puts command.inspect
     if ENDPOINTS.include?(command)
       send(command)
+    elsif command == :""
+      events = Event.all(upcoming: true).map do |event|
+        "#{event.name} ##{event.tag}\nAttending: #{event.rsvp.attending.keys.join(', ')}"
+      end
+      raise StandardError, events.join("\n\n")
     else
       event = Event.find(command)
       if event

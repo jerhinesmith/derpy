@@ -1,5 +1,6 @@
 require_relative '../lib/keystore'
 require 'json'
+require 'time'
 require 'cgi'
 
 class Event
@@ -34,10 +35,20 @@ class Event
     find_by_id(id)
   end
 
-  def self.all
+  def self.all(options = {})
     events = []
     tags.each do |tag|
-      events << find_by_tag(tag)
+      event = find_by_tag(tag)
+
+      if options[:upcoming]
+        begin
+          next if event.date.nil? || (Time.parse(event.date) <= Time.now)
+        rescue ArgumentError => e
+          next
+        end
+      end
+
+      events << event
     end
     events
   end

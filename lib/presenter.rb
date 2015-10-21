@@ -48,16 +48,16 @@ class Presenter
 
     if rsvp[:response] == 'yes'
       result += ":white_check_mark: #{rsvp[:name]} is attending"
-      people = event.rsvp.attending.keys
-      if people.length > 1
+      people = event.rsvp.attending.keys.reject{|name| name == rsvp[:name] }
+      if people.length > 0
         result += ", along with #{people.join(', ')}."
       else
         result += ". Alone."
       end
     elsif rsvp[:response] == 'no'
       result += ":x: #{rsvp[:name]} is pussing out"
-      people = event.rsvp.skipping.keys
-      if people.length > 1
+      people = event.rsvp.skipping.keys.reject{|name| name == rsvp[:name] }
+      if people.length > 0
         result += ", joining #{people.join(', ')}."
       else
         result += ", because he's got so many better things to do."
