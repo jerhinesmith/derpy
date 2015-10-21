@@ -129,6 +129,17 @@ get '/event' do
   end
 end
 
+get '/rsvp' do
+  params[:text] = "rsvp #{params[:text]}"
+  controller = EventsController.new(channel, params)
+
+  begin
+    controller.respond
+  rescue StandardError => e
+    return e.message
+  end
+end
+
 get '/mitch' do
   message = OutgoingMessage.new(
     channel: "##{params["channel_name"]}",
