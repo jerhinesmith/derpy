@@ -130,7 +130,7 @@ get '/event' do
 end
 
 get '/rsvp' do
-  params[:text] = "rsvp #{params[:text]}"
+  params['text'] = "rsvp #{params[:text]}"
   controller = EventsController.new(channel, params)
 
   begin
