@@ -49,12 +49,21 @@ class Raiders
       location_string[2].strip
     end
 
+    def link
+      'http://espn.go.com/nfl/team/schedule/_/name/oak'
+    end
+
     def opponent_emoji
       ":#{opponent.split(/\W/).last.downcase}:"
     end
 
     def emoji_summary
-      home? ? "#{opponent_emoji} @ :raiders:" : ":raiders: @ #{opponent_emoji}"
+      playing = ["#{opponent} #{opponent_emoji}", 'Oakland Raiders :raiders:']
+      (home? ? playing : playing.reverse).join(' @ ')
+    end
+
+    def tag
+      "raiders_#{dtstart.to_date}"
     end
 
     def rsvp!(name, response)

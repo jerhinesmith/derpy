@@ -62,17 +62,29 @@ end
 
 get '/raiders' do
   args = ArgParser.new(params[:text]).to_hash
-  command = args[:command] ? args[:command].to_sym : :next
-  raiders = Raiders.new(params.merge(:args => args))
+  presenter = Presenter.new(params.merge({
+    bot: {
+      name: Raiders::USERNAME,
+      icon_url: Raiders::LOGO_URL
+    }
+  }))
 
-  case command
-  when :next
-    raiders.summary
-  when :rsvp
-    raiders.rsvp!
+  game = Raiders.new(params.merge(:args => args)).next_game
+  event = Event.find(game.tag)
+  if event.nil?
+    event = Event.create({
+      'tag' => game.tag,
+      'name' => 'Next Raiders Game',
+      'link' => game.link,
+      'date' => game.start_time,
+      'body' => game.emoji_summary,
+      'image_url' => 'http://i.imgur.com/UCiZdsW.jpg',
+      'location' => game.location
+    })
   end
 
-  channel.post(raiders.message)
+  presenter.event = event
+  channel.post(presenter.content)
 end
 
 get '/gif' do

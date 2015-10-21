@@ -28,6 +28,10 @@ class Raiders
     @message.attachments << single_rsvp_attachment
   end
 
+  def next_game
+    @next_game ||= events.select{|e| e.dtstart >= DateTime.now}.first
+  end
+
   private
 
   def default_message
@@ -71,10 +75,6 @@ class Raiders
       title: 'RSVPs',
       fields: next_game.rsvp_fields
     )
-  end
-
-  def next_game
-    events.select{|e| e.dtstart >= DateTime.now}.first
   end
 
   def schedule

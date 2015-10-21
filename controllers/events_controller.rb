@@ -40,7 +40,11 @@ EOF
     args = params['text'].to_s.match(/([\w|-]*)(.*)/)
     @command = args[1].to_sym
     @text    = args[2].strip
-    @presenter = Presenter.new(params)
+    @presenter = Presenter.new(params.merge({
+      bot: {
+        name: 'eventcjh'
+      }
+    }))
   end
 
   def respond
