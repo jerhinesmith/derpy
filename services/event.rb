@@ -17,6 +17,12 @@ class Event
     ATTRIBUTES.each do |attribute|
       send "#{attribute}=", options.fetch(attribute.to_s, nil)
     end
+
+    begin
+      self.date = Time.parse(date) unless date.nil?
+    rescue ArgumentError => e
+      puts "Couldn't parse #{date} into a timestamp"
+    end
   end
 
   def self.find(id_or_tag)
@@ -41,16 +47,14 @@ class Event
       event = find_by_tag(tag)
 
       if options[:upcoming]
-        begin
-          next if event.date.nil? || (Time.parse(event.date) <= Time.now)
-        rescue ArgumentError => e
-          next
-        end
+        next if event.date.nil? || !event.date.is_a?(Time)
+        next if event.date <= Time.now
       end
 
       events << event
     end
-    events
+
+    events.sort{|x,y| !x.date.is_a?(Time) || !y.date.is_a?(Time) ? 0 : x.date <=> y.date }
   end
 
   def self.tags
@@ -124,6 +128,11 @@ class Event
 
   def to_json
     attributes.to_json
+  end
+
+  def date_string
+    return '' if date.nil?
+    !date.is_a?(Time) ? date : date.strftime("%A, %b %d at %I:%M%P")
   end
 
   def exists?

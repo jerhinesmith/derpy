@@ -56,7 +56,7 @@ EOF
       send(command)
     elsif command == :""
       events = Event.all(upcoming: true).map do |event|
-        "#{event.name} ##{event.tag}\nAttending: #{event.rsvp.attending.keys.join(', ')}"
+        "#{event.name} ##{event.tag}\nWhen: #{event.date_string}\nAttending: #{event.rsvp.attending.keys.join(', ')}"
       end
       raise StandardError, events.join("\n\n")
     else
@@ -101,7 +101,7 @@ EOF
   end
 
   def update
-    _, id, attribute, value = *text.lstrip.match(/(\w*)\s(\w*)\s(.*)/)
+    _, id, attribute, value = *text.lstrip.match(/([\w|-]*)\s([\w]*)\s(.*)/)
     unless event = Event.find(id)
       raise StandardError, "No event found for: #{id}"
     end

@@ -86,7 +86,7 @@ class Presenter
       short: true
     },{
       title: 'Date',
-      value: event.date,
+      value: event.date_string,
       short: true
     }]
 
