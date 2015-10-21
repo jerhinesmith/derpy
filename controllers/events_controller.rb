@@ -56,7 +56,8 @@ EOF
       send(command)
     elsif command == :""
       events = Event.all(upcoming: true).map do |event|
-        "#{event.name} ##{event.tag}\nWhen: #{event.date_string}\nAttending: #{event.rsvp.attending.keys.join(', ')}"
+        attendees = event.rsvp.attending.keys
+        "#{event.name} ##{event.tag}\nWhen: #{event.date_string}\nAttending: #{presenter.humanized_list(attendees)}"
       end
       raise StandardError, events.join("\n\n")
     else

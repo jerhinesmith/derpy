@@ -36,6 +36,14 @@ class Presenter
     self.events = (events || []) + [ev]
   end
 
+  def humanized_list(list)
+    last = list.pop if list.length > 1
+
+    result = list.join(', ')
+    result += " and #{last}" if last
+    result
+  end
+
   private
 
   def events_attachment
@@ -93,20 +101,20 @@ class Presenter
     attending = event.rsvp.attending
     fields.push({
       title: ':white_check_mark: Going',
-      value: attending.keys.join(', ')
+      value: humanized_list(attending.keys)
     }) if attending.any?
 
     skipping = event.rsvp.skipping
     fields.push({
       title: ":x: Can't Go",
-      value: skipping.keys.join(', '),
+      value: humanized_list(skipping.keys),
       short: true
     }) if skipping.any?
 
     waiting = (Slack::USERNAMES - event.rsvp.responders)
     fields.push({
       title: ":speech_balloon: Haven't responded",
-      value: waiting.join(', '),
+      value: humanized_list(waiting),
       short: true
     }) if waiting.any?
 
@@ -124,13 +132,5 @@ class Presenter
 
   def result_attachment
     MessageAttachment.new(text: result)
-  end
-
-  def humanized_list(list)
-    last = list.pop if list.length > 1
-
-    result = list.join(', ')
-    result += " and #{last}" if last
-    result
   end
 end
