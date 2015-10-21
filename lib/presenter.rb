@@ -94,7 +94,7 @@ class Presenter
       short: true
     },{
       title: 'Date',
-      value: event.date_string,
+      value: create_event_link(event),
       short: true
     }]
 
@@ -132,5 +132,22 @@ class Presenter
 
   def result_attachment
     MessageAttachment.new(text: result)
+  end
+
+  def create_event_link(event)
+    params = {
+      action: 'TEMPLATE',
+      sf: true,
+      output: 'xml',
+      text: event.name || "New Event"
+    }
+
+    dates_param = event.date_string(:url)
+    params.merge!(dates: dates_param) if dates_param
+    params.merge!(details: event.body) if event.body
+    params.merge!(location: event.location) if event.location
+
+    param_string = params.map{|k,v| "#{k}=#{CGI.escape(v.to_s)}" }.join('&')
+    "<https://www.google.com/calendar/render?#{param_string}|#{event.date_string}>"
   end
 end

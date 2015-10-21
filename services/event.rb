@@ -130,9 +130,17 @@ class Event
     attributes.to_json
   end
 
-  def date_string
-    return '' if date.nil?
-    !date.is_a?(Time) ? date : date.strftime("%A, %b %d at %I:%M%P")
+  def date_string(format = :human)
+    case format
+    when :human
+      return '' if date.nil?
+      !date.is_a?(Time) ? date : date.strftime("%A, %b %d at %I:%M%P")
+    when :url
+      return unless date.is_a?(Time)
+      fmt = '%Y%m%dT%H%M%SZ'
+      offset = 25200
+      "#{(date + offset).strftime(fmt)}/#{(date + offset + 10800).strftime(fmt)}"
+    end
   end
 
   def exists?
