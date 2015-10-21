@@ -94,7 +94,7 @@ EOF
     end
 
     event.update(attribute => value)
-    presenter.event = event
+    raise StandardError, "Updated event: #{attribute} to #{value}"
   end
 
   def help
