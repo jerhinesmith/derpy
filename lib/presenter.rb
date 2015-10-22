@@ -65,7 +65,7 @@ class Presenter
         result += ". Alone."
       end
     elsif rsvp[:response] == 'no'
-      result += ":x: @#{rsvp[:name]} is pussing out"
+      result += ":thubs: #{rsvp[:name]} is pussing out"
       people = event.rsvp.skipping.keys.reject{|name| name == rsvp[:name] }
       if people.length > 0
         result += ", joining #{humanized_list(people)}."
@@ -108,7 +108,7 @@ class Presenter
 
     skipping = event.rsvp.skipping
     fields.push({
-      title: ":x: Can't Go",
+      title: ":thubs: Can't Go",
       value: humanized_list(skipping.keys),
       short: true
     }) if skipping.any?
