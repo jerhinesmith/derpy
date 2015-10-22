@@ -1,5 +1,5 @@
 class OutgoingMessage
-  attr_accessor :channel, :username, :text, :icon_emoji, :icon_url, :attachments
+  attr_accessor :channel, :username, :text, :icon_emoji, :icon_url, :attachments, :link_names
 
   def initialize(attributes = {})
     self.attachments = []
@@ -24,6 +24,7 @@ class OutgoingMessage
     @payload.merge!(username:     username)     unless username.nil?
     @payload.merge!(icon_emoji:   icon_emoji)   unless icon_emoji.nil?
     @payload.merge!(icon_url:     icon_url)     unless icon_url.nil?
+    @payload.merge!(link_names:   link_names)   unless link_names.nil?
     @payload.merge!(attachments:  attachments)  unless attachments.empty?
 
     @payload

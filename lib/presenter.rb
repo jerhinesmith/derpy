@@ -17,6 +17,7 @@ class Presenter
       text: text,
       channel: channel_name,
       username: bot_name,
+      link_names: 1,
       icon_url: bot_icon
     })
 
@@ -56,7 +57,7 @@ class Presenter
     result = ""
 
     if rsvp[:response] == 'yes'
-      result += ":white_check_mark: #{rsvp[:name]} is attending"
+      result += ":white_check_mark: @#{rsvp[:name]} is attending"
       people = event.rsvp.attending.keys.reject{|name| name == rsvp[:name] }
       if people.length > 0
         result += " along with #{humanized_list(people)}."
@@ -64,7 +65,7 @@ class Presenter
         result += ". Alone."
       end
     elsif rsvp[:response] == 'no'
-      result += ":x: #{rsvp[:name]} is pussing out"
+      result += ":x: @#{rsvp[:name]} is pussing out"
       people = event.rsvp.skipping.keys.reject{|name| name == rsvp[:name] }
       if people.length > 0
         result += ", joining #{humanized_list(people)}."
