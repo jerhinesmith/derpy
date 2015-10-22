@@ -37,6 +37,7 @@ class Presenter
   end
 
   def humanized_list(list)
+    list.map!{|name| "@#{name}" }
     last = list.pop if list.length > 1
 
     result = list.join(', ')
