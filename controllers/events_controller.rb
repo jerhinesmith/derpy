@@ -1,7 +1,7 @@
 class EventsController
   attr_reader :channel, :params, :command, :text, :username, :presenter
 
-  ENDPOINTS = [:create, :tag, :list, :update, :rsvp, :help]
+  ENDPOINTS = [:create, :tag, :list, :update, :rsvp, :remove, :help]
 
   HELP = <<EOF
 
@@ -15,6 +15,9 @@ class EventsController
   Create a new event delimited by the pipe "|". TAG is required
   ex: /event create foo|My Title
   ex: /event create umm|Weird Dungeon Sex Party|2015-11-13 23:00PST||Chez Vukicevich
+
+/event remove TAG
+  - Remove the specified event
 
 /event list
   List all the tags for existing events
@@ -77,7 +80,14 @@ EOF
       raise StandardError, "You must provide a tag for your event."
     end
 
+    cleanup_events
     presenter.event = create_event!(text)
+  end
+
+  def remove
+    event = Event.find(text)
+    event.destroy if event
+    raise StandardError, "Removed #{event.name} ##{event.tag}"
   end
 
   def rsvp
@@ -124,5 +134,9 @@ EOF
     else
       return Event.parse(text)
     end
+  end
+
+  def cleanup_events
+    Event.all(completed: true).each{|event| event.destroy }
   end
 end

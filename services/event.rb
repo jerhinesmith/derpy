@@ -20,7 +20,7 @@ class Event
 
     begin
       self.date = Time.parse(date) unless date.nil?
-    rescue ArgumentError => e
+    rescue ArgumentError
       puts "Couldn't parse #{date} into a timestamp"
     end
   end
@@ -49,6 +49,11 @@ class Event
       if options[:upcoming]
         next if event.date.nil? || !event.date.is_a?(Time)
         next if event.date <= Time.now
+      end
+
+      if options[:completed]
+        next if event.date.nil? || !event.date.is_a?(Time)
+        next if event.date > Time.now
       end
 
       events << event
@@ -84,6 +89,12 @@ class Event
       send("#{k}=", v)
     end
     save
+  end
+
+  def destroy
+    store.del(id)
+    store.del self.class.tag_redis_key(tag) if tag
+    self
   end
 
   def save
@@ -160,8 +171,11 @@ class Event
   end
 
   def self.tag!(tag, id)
-    key = "tags/#{ tag.downcase.strip.gsub(/[^\w]/, '-') }"
-    store.set(key, id)
+    store.set(tag_redis_key(tag), id)
+  end
+
+  def self.tag_redis_key(tag)
+    "tags/#{ tag.downcase.strip.gsub(/[^\w]/, '-') }"
   end
 
   def self.next_id

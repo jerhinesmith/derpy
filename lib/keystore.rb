@@ -28,6 +28,10 @@ class Keystore
     redis{|r| r.sadd(scoped(key), value) }
   end
 
+  def del(key)
+    redis{|r| r.del(scoped(key)) }
+  end
+
   def remove(key, value)
     redis{|r| r.srem(scoped(key), value) }
   end
