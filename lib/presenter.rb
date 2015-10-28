@@ -60,7 +60,7 @@ class Presenter
       result += ":white_check_mark: @#{rsvp[:name]} is attending"
       people = event.rsvp.attending.keys.reject{|name| name == rsvp[:name] }
       if people.length > 0
-        result += " along with #{humanized_list(people)}."
+        result += " along with #{humanized_list(people)}"
       else
         result += ". Alone."
       end
@@ -68,12 +68,12 @@ class Presenter
       result += ":thubs: #{rsvp[:name]} is pussing out"
       people = event.rsvp.skipping.keys.reject{|name| name == rsvp[:name] }
       if people.length > 0
-        result += ", joining #{humanized_list(people)}."
+        result += ", joining #{humanized_list(people)}"
       else
-        result += ", because he's got so many better things to do."
+        result += ", because he's got so many better things to do"
       end
     else
-      result += ":speech_balloon: #{rsvp[:name]} might go."
+      result += ":speech_balloon: #{rsvp[:name]} might go"
     end
 
     MessageAttachment.new({
