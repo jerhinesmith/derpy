@@ -5,22 +5,22 @@ require_relative '../lib/redis_wrapper'
 
 class GifCjh
   include RedisWrapper
-
-  HELP = <<EOF
-
-/gif                         returns a list of possible keys
-/gif KEY                     returns a gif if one is found
-/gif show KEY                show the url for the given key
-/gif add KEY URL             adds a new url for the given key
-/gif remove KEY URL          removes the url for the given key
-/gif help                    returns this list
-EOF
-
-  attr_reader :key, :url
+  attr_accessor :key, :url
 
   def initialize(key = nil, url = nil)
     @key = key.to_s
     @url = url.to_s
+  end
+
+  def self.find(*tags)
+    results = []
+    [*tags].each{|key| results += store.list(key) }
+    [*tags].each{|key| results += store.list("tags/#{key}") }
+
+    # Group keys by number of occurrences and pick the most frequent
+    weights = results.group_by{|e| e }.values.group_by{|a| a.size }
+    puts "Gif weights: #{weights.inspect}"
+    (weights[weights.keys.max] || [[]]).sample.first
   end
 
   def get
@@ -30,7 +30,12 @@ EOF
 
   def add
     return unless has_key? && has_url?
-    store.add(key, url)
+    tags = key.split(',')
+    store.add(tags.shift, url)
+
+    tags.each do |tag|
+      self.class.tag(tag, url)
+    end
   end
 
   def remove
@@ -42,8 +47,25 @@ EOF
     store.keys(scope, full_path).sort
   end
 
-  def gifs
-    keys = store.keys('*', true).sort
+  def self.tag(key, url)
+    key.split(',').each do |tag|
+      next unless tag && tag.size > 0
+      store.add("tags/#{tag}", url)
+    end
+  end
+
+  def list
+    return [] unless has_key?
+    store.list(key)
+  end
+
+  def tags
+    return [] unless has_key?
+    gifs("tags/#{key}")
+  end
+
+  def gifs(scope = '*')
+    keys = store.keys(scope, true).sort
 
     data = {}
     redis do |r|
@@ -55,8 +77,6 @@ EOF
     data
   end
 
-  private
-
   def has_key?
     key && key.size > 0
   end
@@ -64,6 +84,8 @@ EOF
   def has_url?
     url && url.size > 0
   end
+
+  private
 
   def self.store
     @store ||= Keystore.new(:gifs)

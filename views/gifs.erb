@@ -40,6 +40,7 @@
 </head>
 <body>
   <% @gifs.each do |key, v| %>
+    <% next if key.match(/tags\//) %>
     <% v.value.each do |src| %>
       <div class="gif">
         <div class="thumbnail">

@@ -1,7 +1,7 @@
 require 'cgi'
 
 class Presenter
-  attr_accessor :text, :events, :result, :channel_name, :bot_name, :bot_icon, :rsvp
+  attr_accessor :text, :events, :result, :channel_name, :user_name, :bot_name, :bot_icon, :rsvp, :gif
 
   def initialize(options = {})
     @channel_name = "##{options[:channel_name]}"
@@ -22,7 +22,7 @@ class Presenter
     })
 
     # If there are values in any of these attributes, add their attachments
-    %w(events result rsvp).each do |section|
+    %w(events result rsvp gif).each do |section|
       if value = self.send(section.to_sym)
         puts "Adding #{section}: #{value}"
         message.attachments += [*send("#{section}_attachment".to_sym)]
@@ -81,6 +81,15 @@ class Presenter
       text:       result,
       color:      '#7CD197',
       fallback:   "#{event.name} - #{result}"
+    })
+  end
+
+  def gif_attachment
+    MessageAttachment.new({
+      fallback:  text,
+      author_name: user_name,
+      text: text,
+      image_url: gif
     })
   end
 

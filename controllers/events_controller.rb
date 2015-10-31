@@ -39,7 +39,6 @@ class EventsController
 EOF
 
   def initialize(channel, params)
-    puts "  Params: #{params.inspect}"
     @channel = channel
     @params  = params
     @username = params[:user_name]
@@ -47,10 +46,9 @@ EOF
     @command = args[1].to_sym
     @text    = args[2].strip
     @presenter = Presenter.new(params.merge({
-      bot: {
-        name: 'eventcjh'
-      }
+      bot: { name: 'eventcjh' }
     }))
+    puts "EventsController##{command} Params: #{params.inspect}"
   end
 
   def respond

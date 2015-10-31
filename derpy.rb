@@ -88,42 +88,13 @@ get '/raiders' do
 end
 
 get '/gif' do
-  command, key, url = params[:text].to_s.split(" ")
-  gif_cjh = GifCjh.new(key || command, url)
+  controller = GifsController.new(channel, params)
 
-  message = OutgoingMessage.new(
-    channel: "##{params["channel_name"]}",
-    username: 'gifcjh',
-    icon_url: 'http://i.imgur.com/w5yXDIe.jpg'
-  )
-
-  case command.to_s.to_sym
-  when :help
-    return GifCjh::HELP
-  when :add
-    return gif_cjh.add    ? "Added #{key}: #{url}"   : "Unable to add key: url"
-  when :remove
-    return gif_cjh.remove ? "Removed #{key}: #{url}" : "Unable to remove key: url"
-  when :"", :list
-    return gif_cjh.keys.join(", ")
-  when :show
-    return gif_cjh.get || "Unable to get key: #{key}"
-  else # got a key
-    if image_url = gif_cjh.get
-      message.attachments << MessageAttachment.new(
-        fallback:  command,
-        author_name: params[:user_name],
-        text: command,
-        image_url: image_url
-      )
-
-      channel.post(message)
-    else
-      return "No match for #{command}"
-    end
+  begin
+    controller.respond
+  rescue StandardError => e
+    return e.message
   end
-
-  return ''
 end
 
 get '/gifs' do
