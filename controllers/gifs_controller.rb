@@ -10,7 +10,7 @@ class GifsController
 /gif KEY                     returns a gif if one is found
 /gif show KEY                show the url for the given key
 /gif add KEY URL             adds a new url for the given key
-/gif tag URL *TAGS           add tags to a url
+/gif tag KEY URL             add a tag to a url
 /gif remove KEY URL          removes the url for the given key
 /gif help                    returns this list
 EOF
