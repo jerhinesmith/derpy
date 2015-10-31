@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>nicethread gifs</title>
+  <style>
+    body {
+      font-family: "Helvetica Neue";
+      font-size: 12px;
+    }
+    .gif {
+      display: inline-block;
+      background: #eee;
+      padding: 2px;
+      border: 1px solid #ddd;
+      border-radius: 3px;
+      color: #999;
+      text-align: center;
+    }
+    .thumbnail {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      overflow: hidden;
+    }
+    .thumbnail img {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      height: 100%;
+      width: auto;
+      -webkit-transform: translate(-50%,-50%);
+          -ms-transform: translate(-50%,-50%);
+              transform: translate(-50%,-50%);
+    }
+    .thumbnail img.portrait {
+      width: 100%;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+  <% @tags.each do |src, tags| %>
+    <div class="gif">
+      <div class="thumbnail">
+        <a href="<%= src %>">
+          <% if src =~ /gifv/ %>
+            <video src="<%= src %>" target="_none" />
+          <% else %>
+            <img src="<%= src %>" target="_none" />
+          <% end %>
+        </a>
+      </div>
+      <div>
+        <span><%= tags.map{|tag| tag.gsub(/^gifs\/tags\//, '') }.join(', ') %></span>
+      </div>
+    </div>
+  <% end %>
+</body>
+</html>

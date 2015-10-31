@@ -102,6 +102,18 @@ get '/gifs' do
   erb :gifs
 end
 
+get '/tags' do
+  @tags = {}
+  gifs = GifCjh.new.gifs
+  gifs.select{|k,v| k.match(/tags\//)}.each_pair do |key, future|
+    future.value.each do |url|
+      @tags[url] = [*@tags[url], key].compact.uniq
+    end
+  end
+
+  erb :tags
+end
+
 get '/event' do
   controller = EventsController.new(channel, params)
 
