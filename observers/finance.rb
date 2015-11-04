@@ -2,7 +2,7 @@ require_relative 'channel_observer'
 
 class Finance < ChannelObserver
   def call
-    match = incoming_message.match(/\$([A-Z]{1,4})/)
+    match = incoming_message.text.match(/\$([A-Z]{1,4})/)
     if match
       symbol = match[1].to_s.upcase
 
