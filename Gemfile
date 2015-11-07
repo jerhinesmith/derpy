@@ -12,6 +12,11 @@ gem 'icalendar'
 gem 'puma'
 gem 'opengraph_parser'
 
+# Database stuff
+gem "pg"
+gem "activerecord"
+gem "sinatra-activerecord"
+
 group :development do
   gem 'foreman'
   gem 'shotgun'

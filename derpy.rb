@@ -1,7 +1,10 @@
 require 'sinatra'
-require 'newrelic_rpm'
+require 'sinatra/activerecord'
+require 'pg'
 require 'faraday'
 require 'json'
+require 'newrelic_rpm'
+require './config/environments'
 
 %w(controllers models services observers lib).each do |dir|
   Dir.glob(File.join(File.dirname(__FILE__), dir, '*.rb')).each do |file|
