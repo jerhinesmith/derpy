@@ -9,8 +9,7 @@ class PorkerCjh
     new_phrase = []
 
     while true do
-      gram = Gram.where(word1: @sword1, word2: @sword2, word3: @sword3).first
-      next_word = gram.suffixes.sample
+      next_word = Gram.random_suffix(@sword1, @sword2, @sword3)
 
       break if next_word == "__MARKOV_END__"
 

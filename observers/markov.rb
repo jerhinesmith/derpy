@@ -4,6 +4,8 @@ class Markov < ChannelObserver
   TUPLE_LENGTH = 3
 
   def call
+    return if incoming_message.user_name =~ /porker/i
+
     input = incoming_message.text
 
     words = input.split(" ")

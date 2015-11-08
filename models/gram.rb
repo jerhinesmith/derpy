@@ -6,4 +6,8 @@ class Gram < ActiveRecord::Base
       Gram.create(word1: word1, word2: word2, word3: word3, suffixes: [suffix])
     end
   end
+
+  def self.random_suffix(word1, word2, word3)
+    where(word1: word1, word2: word2, word3: word3).select("id, suffixes[ceil(random()*array_length(suffixes, 1))] as random_suffix").first.try(:random_suffix)
+  end
 end
