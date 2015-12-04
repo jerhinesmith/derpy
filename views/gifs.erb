@@ -22,7 +22,7 @@
             <% if src =~ /gifv/ %>
               <video src="<%= src %>" target="_none" />
             <% else %>
-              <% if src.include?('imgur') %>
+              <% if !src.include?('reactiongifs') %>
                 <img src="<%= src %>" class="freezeframe" target="_none" />
               <% else %>
                 <img src="<%= src %>" target="_none" />
