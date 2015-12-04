@@ -2,41 +2,15 @@
 <html>
 <head>
   <title>nicethread gifs</title>
-  <style>
-    body {
-      font-family: "Helvetica Neue";
-      font-size: 12px;
+  <link rel="stylesheet" type="text/css" href="stylesheets/gifs.css">
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+  <script type="text/javascript" src="javascripts/freezeframe.js"></script>
+  <script type="text/javascript">
+    freezeframe_options = {
+      loading_background_color: "#999",
+      animation_icon_image: false
     }
-    .gif {
-      display: inline-block;
-      background: #eee;
-      padding: 2px;
-      border: 1px solid #ddd;
-      border-radius: 3px;
-      color: #999;
-      text-align: center;
-    }
-    .thumbnail {
-      position: relative;
-      width: 200px;
-      height: 200px;
-      overflow: hidden;
-    }
-    .thumbnail img {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      height: 100%;
-      width: auto;
-      -webkit-transform: translate(-50%,-50%);
-          -ms-transform: translate(-50%,-50%);
-              transform: translate(-50%,-50%);
-    }
-    .thumbnail img.portrait {
-      width: 100%;
-      height: auto;
-    }
-  </style>
+  </script>
 </head>
 <body>
   <% @gifs.each do |key, v| %>
@@ -48,7 +22,7 @@
             <% if src =~ /gifv/ %>
               <video src="<%= src %>" target="_none" />
             <% else %>
-              <img src="<%= src %>" target="_none" />
+              <img src="<%= src %>" class="freezeframe" target="_none" />
             <% end %>
           </a>
         </div>
