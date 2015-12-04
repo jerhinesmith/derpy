@@ -22,7 +22,11 @@
             <% if src =~ /gifv/ %>
               <video src="<%= src %>" target="_none" />
             <% else %>
-              <img src="<%= src %>" class="freezeframe" target="_none" />
+              <% if src.include?('imgur') %>
+                <img src="<%= src %>" class="freezeframe" target="_none" />
+              <% else %>
+                <img src="<%= src %>" target="_none" />
+              <% end %>
             <% end %>
           </a>
         </div>
