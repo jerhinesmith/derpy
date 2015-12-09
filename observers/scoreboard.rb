@@ -6,6 +6,7 @@ class Scoreboard < ChannelObserver
   def call
     if match = incoming_message.text.match(/@(.*)(\+\+|\-\-)/)
       name, operation = match.captures
+      name = Slack::SLACK_IDS[name.gsub(/\W/, '')] || name
       total = adjust_score(name, operation)
 
       rank = self.class.rank(name)
