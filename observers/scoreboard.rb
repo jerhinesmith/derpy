@@ -10,13 +10,14 @@ class Scoreboard < ChannelObserver
       return if name.nil? || name == incoming_message.user_name
       total = adjust_score(name, operation)
 
-      rank = self.class.rank(name)
-      channel.post(OutgoingMessage.new({
-        channel:  "##{incoming_message.channel_name}",
-        username: 'scorecjh',
-        icon_url: 'http://i.imgur.com/Tjk6mim.jpg',
-        text: "@#{name}: #{ordinalize(rank)}"
-      }))
+      # Too noisy
+      # rank = self.class.rank(name)
+      # channel.post(OutgoingMessage.new({
+      #   channel:  "##{incoming_message.channel_name}",
+      #   username: 'scorecjh',
+      #   icon_url: 'http://i.imgur.com/Tjk6mim.jpg',
+      #   text: "@#{name}: #{ordinalize(rank)}"
+      # }))
     end
   end
 
