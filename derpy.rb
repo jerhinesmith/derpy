@@ -179,3 +179,14 @@ get '/porker' do
 
   channel.post(message)
 end
+
+get '/culture' do
+  message = OutgoingMessage.new(
+    channel: "##{params["channel_name"]}",
+    username: 'culturecjh',
+    icon_url: 'http://i.imgur.com/w5yXDIe.jpg',
+    text: Culture.call
+  )
+
+  channel.post(message)
+end
