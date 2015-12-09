@@ -117,6 +117,15 @@ get '/tags' do
   erb :tags
 end
 
+get '/scoreboard' do
+  channel.post(OutgoingMessage.new({
+    channel: "##{params["channel_name"]}",
+    username: 'scorecjh',
+    icon_url: 'http://i.imgur.com/Tjk6mim.jpg',
+    text:     Scoreboard.scores.map{|k,v| "#{k}: #{v}" }.join("\n")
+  }))
+end
+
 get '/event' do
   controller = EventsController.new(channel, params)
 
