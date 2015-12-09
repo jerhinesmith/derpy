@@ -61,7 +61,7 @@ class Keystore
 
   def decrement(key)
     value = get(key)
-    value = (value || 0) - 1
+    value = (value.to_i || 0) - 1
     set(key, value)
     value
   end
