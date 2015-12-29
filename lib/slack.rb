@@ -2,12 +2,14 @@ module Slack
 
   USERNAMES = %w(
     aaron
+    beccio
     cjh
     david
     dj
     edgy
     mk
     mttwrnr
+    pumprtron
     rhino
   )
 
