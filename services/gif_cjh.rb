@@ -77,6 +77,10 @@ class GifCjh
     data
   end
 
+  def self.track(username, *tags)
+    tags.each{|tag| store.increment("hits/#{username}/#{tag}") }
+  end
+
   def has_key?
     key && key.size > 0
   end

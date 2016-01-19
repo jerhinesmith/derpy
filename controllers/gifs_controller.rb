@@ -40,6 +40,8 @@ EOF
       puts "Finding gif for: #{tags.inspect}"
       gif = GifCjh.find(*tags)
 
+      GifCjh.track(username, *tags)
+
       if gif
         presenter.gif = gif
       else
