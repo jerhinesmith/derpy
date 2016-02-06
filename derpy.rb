@@ -190,3 +190,22 @@ get '/culture' do
 
   channel.post(message)
 end
+
+get '/frink' do
+  image_url = Frink.call(params['text'])
+  return "Could not find an image for #{params['text']}" unless image_url
+
+  message = OutgoingMessage.new({
+    channel: "##{params["channel_name"]}",
+    username: 'frinkcjh',
+    icon_url: 'http://i.imgur.com/EEmZJGi.png'
+  })
+
+  message.attachments << MessageAttachment.new({
+    fallback:  params['text'],
+    author_name: params['user_name'],
+    image_url: image_url
+  })
+
+  channel.post(message)
+end
