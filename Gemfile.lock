@@ -24,8 +24,11 @@ GEM
     equalizer (0.0.11)
     faraday (0.9.1)
       multipart-post (>= 1.2, < 3)
+    faraday_middleware (0.10.0)
+      faraday (>= 0.7.4, < 0.10)
     foreman (0.78.0)
       thor (~> 0.19.1)
+    hashie (3.4.2)
     http (0.6.4)
       http_parser.rb (~> 0.6.0)
     http_parser.rb (0.6.0)
@@ -103,7 +106,9 @@ DEPENDENCIES
   activerecord
   awesome_print
   faraday
+  faraday_middleware
   foreman
+  hashie
   icalendar
   newrelic_rpm
   nokogiri

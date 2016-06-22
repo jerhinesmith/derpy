@@ -14,6 +14,7 @@ end
 
 slack_channel = ENV['SLACK_CHANNEL']
 channel = Channel.new(slack_channel, ENV['SLACK_INCOMING_PATH'])
+gif_client = SlashGif.client
 
 (ENV['OBSERVERS'] || "").split(',').each do |observer_klass|
   observer_klass.capitalize!
@@ -208,4 +209,31 @@ get '/frink' do
   })
 
   channel.post(message)
+end
+
+get '/slash_gif' do
+  content_type :json
+  args = params['text'].to_s.split(/\s+/)
+
+  # Show the tags
+  if args.length == 0
+    tags = gif_client.tags(per: 500)
+
+    {
+      text: "The following tags are available",
+      attachments: [
+        {
+          text: tags.collect{|t| t['name']}.join(', ')
+        }
+      ]
+    }.to_json
+  else
+    gif = gif_client.random(tag: args.first)
+
+    if url = gif.url
+      OutgoingMessage.new(response_type: 'in_channel', attachments: [MessageAttachment.new(image_url: url)]).to_json
+    else
+      "No gifs found"
+    end
+  end
 end
