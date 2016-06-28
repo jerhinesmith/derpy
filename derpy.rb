@@ -213,22 +213,23 @@ end
 
 get '/slash_gif' do
   content_type :json
-  args = params['text'].to_s.split(/\s+/)
+  command, options = params['text'].to_s.split(/\s+/, 2)
 
-  # Show the tags
-  if args.length == 0
+  case command
+  when nil
+    # Show the tags
     tags = gif_client.tags(per: 500)
 
-    {
-      text: "The following tags are available",
-      attachments: [
-        {
-          text: tags.collect{|t| t['name']}.join(', ')
-        }
-      ]
-    }.to_json
+    OutgoingMessage.new(text: 'The following tags are available', attachments: [MessageAttachment.new(text: tags.collect{|t| t['name']}.join(', '))]).to_json
+  when /add/i
+    # Add a new url
+    url, tags = options.split(/\s+/).partition{ |o| o =~ /^https?:\/\// }
+
+    gif_client.create_gif(url.first, tag_list: tags.join(','))
   else
-    gif = gif_client.random(tag: args.first)
+    # Random for tag
+    puts "Get tag"
+    gif = gif_client.random(tag: command)
 
     if url = gif.url
       OutgoingMessage.new(response_type: 'in_channel', attachments: [MessageAttachment.new(image_url: url)]).to_json

@@ -33,7 +33,7 @@ module SlashGif
           request.url(URI.encode(path), options)
         when :post, :put
           request.path = URI.encode(path)
-          request.body = options unless options.empty?
+          request.body = URI.encode_www_form(options) unless options.empty?
         end
       end
       return response if raw

@@ -27,6 +27,12 @@ module SlashGif
         response = get("gifs/random", options)
         response
       end
+
+      def create_gif(url, options = {})
+        params    = Hash[options.merge(url: url).map{|k, v| ["gif[#{k}]", v]}]
+        response  = post("gifs", params)
+        response
+      end
     end
   end
 end
