@@ -14,6 +14,8 @@ end
 
 slack_channel = ENV['SLACK_CHANNEL']
 channel = Channel.new(slack_channel, ENV['SLACK_INCOMING_PATH'])
+league_channel = Channel.new(ENV['LEAGUE_CHANNEL'], ENV['LEAGUE_PATH'])
+
 gif_client = SlashGif.client
 
 (ENV['OBSERVERS'] || "").split(',').each do |observer_klass|
@@ -128,7 +130,7 @@ get '/scoreboard' do
 end
 
 get '/event' do
-  controller = EventsController.new(channel, params)
+  controller = EventsController.new(league_channel, params)
 
   begin
     controller.respond
